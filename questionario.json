@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "response_scale": [
+    {"value": 0, "label": "Não sei, não existe ou não faço."},
+    {"value": 1, "label": "Tenho uma ideia, mas quase nunca a aplico."},
+    {"value": 2, "label": "Faço algumas vezes, sem consistência."},
+    {"value": 3, "label": "Está claro e aplico na maioria das vezes."},
+    {"value": 4, "label": "Está definido, aplico com consistência e tenho uma prova recente de que funciona."}
+  ],
+  "categories": [
+    {"id": "direcao", "label": "Direção da loja", "weight": 20, "modules": ["cliente_comprador", "posicionamento"]},
+    {"id": "oferta_valor", "label": "Oferta e valor", "weight": 20, "modules": ["oferta_principal", "preco_valor"]},
+    {"id": "conteudo_visibilidade", "label": "Conteúdo e visibilidade", "weight": 20, "modules": ["conteudo_hooks", "alcance_divulgacao"]},
+    {"id": "confianca_relacao", "label": "Confiança e relação", "weight": 10, "modules": ["prova_confianca"]},
+    {"id": "compra_venda", "label": "Compra e venda", "weight": 20, "modules": ["caminho_compra", "fecho_acompanhamento"]},
+    {"id": "planeamento", "label": "Planeamento comercial", "weight": 10, "modules": ["ritmo_campanhas"]}
+  ],
+  "modules": [
+    {
+      "id": "cliente_comprador",
+      "label": "Cliente comprador",
+      "category": "direcao",
+      "weight": 10,
+      "questions": [
+        {"id": "q01", "dimension": "clareza", "text": "Consigo descrever, sem responder “toda a gente”, quem costuma comprar e quem vai usar ou receber aquilo que vendo."},
+        {"id": "q02", "dimension": "aplicacao", "text": "Consigo indicar pelo menos duas situações concretas que levam essa pessoa a procurar os meus produtos."},
+        {"id": "q03", "dimension": "prova", "text": "Nos últimos 90 dias, usei perguntas, pedidos, recusas, encomendas ou feedback real para ajustar aquilo que mostro ou vendo."}
+      ]
+    },
+    {
+      "id": "posicionamento",
+      "label": "Posicionamento",
+      "category": "direcao",
+      "weight": 10,
+      "questions": [
+        {"id": "q04", "dimension": "clareza", "text": "Ao entrar na minha página ou loja, uma pessoa percebe em poucos segundos o que vendo e para que tipo de compra."},
+        {"id": "q05", "dimension": "aplicacao", "text": "Consigo explicar uma razão concreta para escolher a minha loja sem responder apenas “qualidade”, “carinho” ou “feito à mão”."},
+        {"id": "q06", "dimension": "prova", "text": "As perguntas e os pedidos que recebo correspondem ao tipo de produto e de cliente que pretendo atrair."}
+      ]
+    },
+    {
+      "id": "oferta_principal",
+      "label": "Oferta principal",
+      "category": "oferta_valor",
+      "weight": 10,
+      "questions": [
+        {"id": "q07", "dimension": "clareza", "text": "Tenho entre um e três produtos, coleções ou tipos de encomenda que quero vender com prioridade nos próximos 30 dias."},
+        {"id": "q08", "dimension": "aplicacao", "text": "A cliente consegue perceber por onde começar e quais são as diferenças entre as principais opções que apresento."},
+        {"id": "q09", "dimension": "prova", "text": "Sei, através de encomendas, perguntas, margem e capacidade de produção ou stock, quais são os produtos que merecem mais destaque."}
+      ]
+    },
+    {
+      "id": "preco_valor",
+      "label": "Preço e valor percebido",
+      "category": "oferta_valor",
+      "weight": 10,
+      "questions": [
+        {"id": "q10", "dimension": "clareza", "text": "Defino os preços considerando produto ou materiais, tempo de trabalho, embalagem, taxas, custos de venda e margem."},
+        {"id": "q11", "dimension": "aplicacao", "text": "Junto ao preço, mostro o que a cliente recebe e quais os detalhes que justificam aquela escolha."},
+        {"id": "q12", "dimension": "prova", "text": "Quando apresento o preço ou respondo a uma pergunta, não mostro apenas um número: ligo o valor à opção adequada, às condições e ao passo seguinte."}
+      ]
+    },
+    {
+      "id": "conteudo_hooks",
+      "label": "Conteúdo e hooks",
+      "category": "conteudo_visibilidade",
+      "weight": 10,
+      "questions": [
+        {"id": "q13", "dimension": "clareza", "text": "A primeira imagem ou frase das minhas publicações ajuda a perceber para quem é o produto, em que momento pode ser útil ou que problema resolve."},
+        {"id": "q14", "dimension": "aplicacao", "text": "Mostro o produto em contexto, através da utilização, tamanho, processo, detalhe, comparação ou resultado, em vez de depender apenas de fotografias isoladas."},
+        {"id": "q15", "dimension": "prova", "text": "Cada conteúdo tem um objetivo claro e consigo identificar quais publicações recentes geraram respostas, partilhas, cliques, pedidos ou encomendas."}
+      ]
+    },
+    {
+      "id": "alcance_divulgacao",
+      "label": "Alcance e divulgação",
+      "category": "conteudo_visibilidade",
+      "weight": 10,
+      "questions": [
+        {"id": "q16", "dimension": "clareza", "text": "Tenho pelo menos uma forma planeada de apresentar a loja a pessoas que ainda não me seguem."},
+        {"id": "q17", "dimension": "aplicacao", "text": "Uso essa forma de divulgação com regularidade e com uma oferta clara, em vez de a experimentar apenas quando as vendas param."},
+        {"id": "q18", "dimension": "prova", "text": "Nas perguntas e encomendas recentes, consigo identificar como a cliente encontrou a loja e uso essa informação para decidir onde voltar a divulgar."}
+      ]
+    },
+    {
+      "id": "prova_confianca",
+      "label": "Prova e confiança",
+      "category": "confianca_relacao",
+      "weight": 10,
+      "questions": [
+        {"id": "q19", "dimension": "clareza", "text": "A minha página mostra fotografias ou vídeos recentes de produtos reais, incluindo detalhes, acabamento, tamanho, utilização ou resultado final."},
+        {"id": "q20", "dimension": "aplicacao", "text": "Mostro opiniões ou mensagens de clientes ligadas a produtos e experiências de encomenda concretas, em vez de elogios soltos sem contexto."},
+        {"id": "q21", "dimension": "prova", "text": "Antes do pagamento, a cliente consegue conhecer os prazos, etapas, aprovações, condições de entrega e o que acontece se houver uma alteração ou um erro."}
+      ]
+    },
+    {
+      "id": "caminho_compra",
+      "label": "Caminho de compra",
+      "category": "compra_venda",
+      "weight": 10,
+      "questions": [
+        {"id": "q22", "dimension": "clareza", "text": "Uma cliente consegue descobrir como encomendar sem ter de começar por perguntar “como faço para comprar?”."},
+        {"id": "q23", "dimension": "aplicacao", "text": "Antes de entrar em contacto, a cliente encontra a informação necessária para avançar, como preço ou valor inicial, opções, tamanho, quantidade, personalização, prazo e entrega, quando aplicável."},
+        {"id": "q24", "dimension": "prova", "text": "Sigo etapas repetíveis para receber a encomenda e confirmo todos os dados antes de produzir, reservar ou enviar."}
+      ]
+    },
+    {
+      "id": "fecho_acompanhamento",
+      "label": "Fecho e acompanhamento",
+      "category": "compra_venda",
+      "weight": 10,
+      "questions": [
+        {"id": "q25", "dimension": "clareza", "text": "Quando alguém pergunta preço ou disponibilidade, respondo e faço uma pergunta útil ou indico uma ação concreta para a conversa avançar."},
+        {"id": "q26", "dimension": "aplicacao", "text": "Quando uma pessoa demonstra interesse concreto e deixa de responder, faço um acompanhamento breve e respeitoso em vez de abandonar imediatamente o contacto."},
+        {"id": "q27", "dimension": "prova", "text": "Depois da entrega, confirmo se correu bem e crio oportunidade para receber uma opinião, recomendação ou nova encomenda."}
+      ]
+    },
+    {
+      "id": "ritmo_campanhas",
+      "label": "Ritmo e campanhas",
+      "category": "planeamento",
+      "weight": 10,
+      "questions": [
+        {"id": "q28", "dimension": "clareza", "text": "Tenho um plano para os próximos 30 dias que liga os produtos que quero vender aos conteúdos e às datas que interessam às minhas clientes."},
+        {"id": "q29", "dimension": "aplicacao", "text": "Preparo campanhas e lançamentos com tempo para fotografias, conteúdos, materiais, stock, personalização, produção e entrega."},
+        {"id": "q30", "dimension": "prova", "text": "No final de uma campanha ou mês, revejo o que chamou atenção, gerou perguntas, vendeu ou ficou parado e uso essa leitura no plano seguinte."}
+      ]
+    }
+  ]
+}
