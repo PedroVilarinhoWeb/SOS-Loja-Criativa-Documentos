@@ -22,9 +22,10 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 84px; }
 body {
   margin: 0;
+  padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px));
   background: var(--paper);
   color: var(--ink);
   font-family: Arial, Helvetica, sans-serif;
@@ -40,7 +41,7 @@ a { color: inherit; }
   top: 0;
   z-index: 20;
   border-bottom: 1px solid rgba(205, 217, 211, 0.9);
-  background: rgba(251, 250, 247, 0.96);
+  background: var(--paper);
 }
 .topbar-inner {
   width: min(1100px, calc(100% - 32px));
@@ -89,7 +90,7 @@ h1 { max-width: 820px; font-size: clamp(38px, 7vw, 68px); }
 }
 
 .content { width: min(920px, calc(100% - 32px)); margin: 0 auto; padding: 42px 0 90px; }
-.section { padding: 38px 0; border-bottom: 1px solid var(--line); }
+.section { padding: 38px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 84px; }
 .section-heading { display: grid; grid-template-columns: 52px 1fr; gap: 16px; align-items: start; margin-bottom: 28px; }
 .section-number {
   width: 48px;
@@ -133,15 +134,19 @@ h1 { max-width: 820px; font-size: clamp(38px, 7vw, 68px); }
 .choice-card input:checked + span::before { border: 5px solid var(--green); }
 .choice-card input:focus-visible + span { outline: 3px solid rgba(185, 133, 47, 0.35); outline-offset: 2px; }
 
-.module { margin-top: 44px; }
+.module { margin-top: 44px; scroll-margin-top: 84px; }
 .module:first-child { margin-top: 0; }
 .module-header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
 .module-header h3 { font-size: 26px; }
 .module-header span { color: var(--muted); font-size: 14px; white-space: nowrap; }
 .question-list { display: grid; gap: 14px; }
-.question-card { margin: 0; padding: 20px; border: 1px solid var(--line); border-radius: 6px; background: var(--white); box-shadow: 0 4px 18px rgba(13, 73, 56, 0.05); }
-.question-card legend { width: 100%; padding: 0; font-size: 17px; font-weight: 700; }
-.question-number { display: inline-flex; min-width: 40px; color: var(--gold); font-family: Georgia, serif; font-size: 21px; }
+.question-card { min-width: 0; margin: 0; padding: 20px; border: 1px solid var(--line); border-radius: 6px; background: var(--white); box-shadow: 0 4px 18px rgba(13, 73, 56, 0.05); scroll-margin-top: 84px; }
+.question-fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.question-fieldset legend { float: left; width: 100%; margin: 0 0 18px; padding: 0; font-size: 17px; font-weight: 700; }
+.question-title { width: 100%; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px; align-items: start; }
+.question-title > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.question-number { color: var(--gold); font-family: Georgia, serif; font-size: 21px; line-height: 1.25; }
+.question-fieldset .scale { clear: both; }
 .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 18px; }
 .scale-option { position: relative; }
 .scale-option input { position: absolute; opacity: 0; }
@@ -180,7 +185,22 @@ h1 { max-width: 820px; font-size: clamp(38px, 7vw, 68px); }
 .check-card input:checked + span { border-color: var(--green); background: var(--green-soft); }
 .check-card input:checked + span::before { border-color: var(--green); background: var(--green); box-shadow: inset 0 0 0 3px var(--green-soft); }
 
-.action-row { position: sticky; bottom: 12px; z-index: 15; display: flex; justify-content: center; gap: 10px; margin-top: 28px; }
+.action-row {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: minmax(120px, 190px) minmax(180px, 260px);
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 12px max(16px, calc((100vw - 920px) / 2)) calc(12px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+  box-shadow: 0 -10px 28px rgba(13, 73, 56, 0.10);
+}
 .button {
   min-height: 48px;
   display: inline-flex;
@@ -219,12 +239,13 @@ h1 { max-width: 820px; font-size: clamp(38px, 7vw, 68px); }
 .score-copy h2 { font-size: 36px; }
 .score-copy p { margin: 12px 0 0; color: var(--muted); }
 .score-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 24px; }
-.score-item { padding: 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--white); }
+.score-item { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--white); }
 .score-item-head { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; font-size: 14px; }
+.score-item-head span { min-width: 0; overflow-wrap: anywhere; }
 .score-item-head strong { color: var(--green); }
 .bar { height: 7px; overflow: hidden; border-radius: 4px; background: #e4e9e7; }
 .bar span { display: block; height: 100%; background: var(--gold); }
-.priority { margin-top: 22px; padding: 26px; border-left: 5px solid var(--gold); background: var(--white); box-shadow: var(--shadow); }
+.priority { margin-top: 22px; padding: 26px; border-left: 5px solid var(--gold); background: var(--white); box-shadow: var(--shadow); overflow-wrap: anywhere; }
 .priority h3 { font-size: 28px; }
 .priority-label { margin: 22px 0 6px; color: var(--gold); font-size: 12px; font-weight: 800; text-transform: uppercase; }
 .priority p { margin: 0; white-space: pre-line; }
@@ -233,6 +254,7 @@ h1 { max-width: 820px; font-size: clamp(38px, 7vw, 68px); }
 .saved-note { margin: 12px 0 0; color: var(--muted); font-size: 13px; text-align: center; }
 
 @media (max-width: 700px) {
+  html { scroll-padding-top: 110px; }
   body { font-size: 16px; }
   .topbar-inner { width: min(100% - 20px, 1100px); grid-template-columns: auto 1fr; gap: 10px; }
   .brand-text { display: none; }
@@ -247,14 +269,21 @@ h1 { max-width: 820px; font-size: clamp(38px, 7vw, 68px); }
   .section-heading h2 { font-size: 27px; }
   .branch-grid, .difficulty-grid, .score-grid { grid-template-columns: 1fr; }
   .question-card { padding: 16px 14px; }
+  .section, .module, .question-card { scroll-margin-top: 110px; }
+  .question-fieldset legend { margin-bottom: 15px; font-size: 16px; }
+  .question-title { grid-template-columns: 34px minmax(0, 1fr); gap: 2px; }
+  .question-number { font-size: 19px; }
   .scale { gap: 5px; }
   .scale-option span { min-height: 46px; }
   .module-header { align-items: start; flex-direction: column; gap: 2px; }
   .score-band { grid-template-columns: 1fr; justify-items: center; text-align: center; }
   .total-score { width: 154px; }
   .priority { padding: 20px 16px; }
-  .action-row { bottom: 8px; }
-  .action-row .button { flex: 1; }
+  .action-row {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+  .action-row .button { width: 100%; min-width: 0; padding-inline: 12px; }
 }
 
 @media print {
@@ -301,163 +330,223 @@ h1 { max-width: 820px; font-size: clamp(38px, 7vw, 68px); }
         <div class="section-heading"><span class="section-number">2</span><div><h2>Responde às 30 perguntas</h2><p>0 significa que não existe. 4 significa que está definido, é aplicado com consistência e existe prova recente.</p></div></div>
         <section class="module" aria-labelledby="module-cliente_comprador">
   <div class="module-header"><h3 id="module-cliente_comprador">1. Cliente comprador</h3><span>Perguntas 1-3</span></div>
-  <div class="question-list"><fieldset class="question-card" data-question="q01">
-  <legend><span class="question-number">01</span>Consigo descrever, sem responder “toda a gente”, quem costuma comprar e quem vai usar ou receber aquilo que vendo.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q01" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q01" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q01" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q01" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q01" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q02">
-  <legend><span class="question-number">02</span>Consigo indicar pelo menos duas situações concretas que levam essa pessoa a procurar os meus produtos.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q02" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q02" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q02" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q02" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q02" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q03">
-  <legend><span class="question-number">03</span>Nos últimos 90 dias, usei perguntas, pedidos, recusas, encomendas ou feedback real para ajustar aquilo que mostro ou vendo.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q03" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q03" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q03" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q03" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q03" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset></div>
+  <div class="question-list"><div class="question-card" data-question="q01">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">01</span><span>Consigo descrever, sem responder “toda a gente”, quem costuma comprar e quem vai usar ou receber aquilo que vendo.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q01" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q01" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q01" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q01" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q01" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q02">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">02</span><span>Consigo indicar pelo menos duas situações concretas que levam essa pessoa a procurar os meus produtos.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q02" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q02" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q02" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q02" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q02" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q03">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">03</span><span>Nos últimos 90 dias, usei perguntas, pedidos, recusas, encomendas ou feedback real para ajustar aquilo que mostro ou vendo.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q03" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q03" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q03" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q03" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q03" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div></div>
 </section>
 <section class="module" aria-labelledby="module-posicionamento">
   <div class="module-header"><h3 id="module-posicionamento">2. Posicionamento</h3><span>Perguntas 4-6</span></div>
-  <div class="question-list"><fieldset class="question-card" data-question="q04">
-  <legend><span class="question-number">04</span>Ao entrar na minha página ou loja, uma pessoa percebe em poucos segundos o que vendo e para que tipo de compra.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q04" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q04" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q04" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q04" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q04" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q05">
-  <legend><span class="question-number">05</span>Consigo explicar uma razão concreta para escolher a minha loja sem responder apenas “qualidade”, “carinho” ou “feito à mão”.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q05" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q05" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q05" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q05" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q05" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q06">
-  <legend><span class="question-number">06</span>As perguntas e os pedidos que recebo correspondem ao tipo de produto e de cliente que pretendo atrair.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q06" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q06" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q06" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q06" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q06" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset></div>
+  <div class="question-list"><div class="question-card" data-question="q04">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">04</span><span>Ao entrar na minha página ou loja, uma pessoa percebe em poucos segundos o que vendo e para que tipo de compra.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q04" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q04" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q04" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q04" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q04" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q05">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">05</span><span>Consigo explicar uma razão concreta para escolher a minha loja sem responder apenas “qualidade”, “carinho” ou “feito à mão”.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q05" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q05" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q05" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q05" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q05" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q06">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">06</span><span>As perguntas e os pedidos que recebo correspondem ao tipo de produto e de cliente que pretendo atrair.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q06" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q06" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q06" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q06" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q06" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div></div>
 </section>
 <section class="module" aria-labelledby="module-oferta_principal">
   <div class="module-header"><h3 id="module-oferta_principal">3. Oferta principal</h3><span>Perguntas 7-9</span></div>
-  <div class="question-list"><fieldset class="question-card" data-question="q07">
-  <legend><span class="question-number">07</span>Tenho entre um e três produtos, coleções ou tipos de encomenda que quero vender com prioridade nos próximos 30 dias.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q07" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q07" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q07" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q07" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q07" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q08">
-  <legend><span class="question-number">08</span>A cliente consegue perceber por onde começar e quais são as diferenças entre as principais opções que apresento.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q08" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q08" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q08" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q08" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q08" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q09">
-  <legend><span class="question-number">09</span>Sei, através de encomendas, perguntas, margem e capacidade de produção ou stock, quais são os produtos que merecem mais destaque.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q09" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q09" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q09" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q09" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q09" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset></div>
+  <div class="question-list"><div class="question-card" data-question="q07">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">07</span><span>Tenho entre um e três produtos, coleções ou tipos de encomenda que quero vender com prioridade nos próximos 30 dias.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q07" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q07" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q07" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q07" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q07" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q08">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">08</span><span>A cliente consegue perceber por onde começar e quais são as diferenças entre as principais opções que apresento.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q08" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q08" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q08" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q08" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q08" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q09">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">09</span><span>Sei, através de encomendas, perguntas, margem e capacidade de produção ou stock, quais são os produtos que merecem mais destaque.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q09" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q09" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q09" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q09" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q09" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div></div>
 </section>
 <section class="module" aria-labelledby="module-preco_valor">
   <div class="module-header"><h3 id="module-preco_valor">4. Preço e valor percebido</h3><span>Perguntas 10-12</span></div>
-  <div class="question-list"><fieldset class="question-card" data-question="q10">
-  <legend><span class="question-number">10</span>Defino os preços considerando produto ou materiais, tempo de trabalho, embalagem, taxas, custos de venda e margem.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q10" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q10" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q10" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q10" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q10" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q11">
-  <legend><span class="question-number">11</span>Junto ao preço, mostro o que a cliente recebe e quais os detalhes que justificam aquela escolha.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q11" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q11" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q11" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q11" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q11" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q12">
-  <legend><span class="question-number">12</span>Quando apresento o preço ou respondo a uma pergunta, não mostro apenas um número: ligo o valor à opção adequada, às condições e ao passo seguinte.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q12" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q12" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q12" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q12" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q12" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset></div>
+  <div class="question-list"><div class="question-card" data-question="q10">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">10</span><span>Defino os preços considerando produto ou materiais, tempo de trabalho, embalagem, taxas, custos de venda e margem.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q10" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q10" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q10" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q10" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q10" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q11">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">11</span><span>Junto ao preço, mostro o que a cliente recebe e quais os detalhes que justificam aquela escolha.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q11" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q11" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q11" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q11" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q11" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q12">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">12</span><span>Quando apresento o preço ou respondo a uma pergunta, não mostro apenas um número: ligo o valor à opção adequada, às condições e ao passo seguinte.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q12" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q12" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q12" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q12" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q12" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div></div>
 </section>
 <section class="module" aria-labelledby="module-conteudo_hooks">
   <div class="module-header"><h3 id="module-conteudo_hooks">5. Conteúdo e hooks</h3><span>Perguntas 13-15</span></div>
-  <div class="question-list"><fieldset class="question-card" data-question="q13">
-  <legend><span class="question-number">13</span>A primeira imagem ou frase das minhas publicações ajuda a perceber para quem é o produto, em que momento pode ser útil ou que problema resolve.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q13" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q13" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q13" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q13" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q13" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q14">
-  <legend><span class="question-number">14</span>Mostro o produto em contexto, através da utilização, tamanho, processo, detalhe, comparação ou resultado, em vez de depender apenas de fotografias isoladas.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q14" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q14" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q14" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q14" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q14" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q15">
-  <legend><span class="question-number">15</span>Cada conteúdo tem um objetivo claro e consigo identificar quais publicações recentes geraram respostas, partilhas, cliques, pedidos ou encomendas.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q15" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q15" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q15" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q15" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q15" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset></div>
+  <div class="question-list"><div class="question-card" data-question="q13">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">13</span><span>A primeira imagem ou frase das minhas publicações ajuda a perceber para quem é o produto, em que momento pode ser útil ou que problema resolve.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q13" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q13" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q13" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q13" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q13" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q14">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">14</span><span>Mostro o produto em contexto, através da utilização, tamanho, processo, detalhe, comparação ou resultado, em vez de depender apenas de fotografias isoladas.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q14" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q14" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q14" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q14" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q14" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q15">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">15</span><span>Cada conteúdo tem um objetivo claro e consigo identificar quais publicações recentes geraram respostas, partilhas, cliques, pedidos ou encomendas.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q15" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q15" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q15" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q15" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q15" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div></div>
 </section>
 <section class="module" aria-labelledby="module-alcance_divulgacao">
   <div class="module-header"><h3 id="module-alcance_divulgacao">6. Alcance e divulgação</h3><span>Perguntas 16-18</span></div>
-  <div class="question-list"><fieldset class="question-card" data-question="q16">
-  <legend><span class="question-number">16</span>Tenho pelo menos uma forma planeada de apresentar a loja a pessoas que ainda não me seguem.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q16" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q16" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q16" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q16" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q16" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q17">
-  <legend><span class="question-number">17</span>Uso essa forma de divulgação com regularidade e com uma oferta clara, em vez de a experimentar apenas quando as vendas param.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q17" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q17" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q17" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q17" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q17" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q18">
-  <legend><span class="question-number">18</span>Nas perguntas e encomendas recentes, consigo identificar como a cliente encontrou a loja e uso essa informação para decidir onde voltar a divulgar.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q18" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q18" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q18" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q18" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q18" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset></div>
+  <div class="question-list"><div class="question-card" data-question="q16">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">16</span><span>Tenho pelo menos uma forma planeada de apresentar a loja a pessoas que ainda não me seguem.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q16" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q16" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q16" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q16" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q16" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q17">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">17</span><span>Uso essa forma de divulgação com regularidade e com uma oferta clara, em vez de a experimentar apenas quando as vendas param.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q17" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q17" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q17" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q17" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q17" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q18">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">18</span><span>Nas perguntas e encomendas recentes, consigo identificar como a cliente encontrou a loja e uso essa informação para decidir onde voltar a divulgar.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q18" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q18" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q18" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q18" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q18" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div></div>
 </section>
 <section class="module" aria-labelledby="module-prova_confianca">
   <div class="module-header"><h3 id="module-prova_confianca">7. Prova e confiança</h3><span>Perguntas 19-21</span></div>
-  <div class="question-list"><fieldset class="question-card" data-question="q19">
-  <legend><span class="question-number">19</span>A minha página mostra fotografias ou vídeos recentes de produtos reais, incluindo detalhes, acabamento, tamanho, utilização ou resultado final.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q19" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q19" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q19" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q19" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q19" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q20">
-  <legend><span class="question-number">20</span>Mostro opiniões ou mensagens de clientes ligadas a produtos e experiências de encomenda concretas, em vez de elogios soltos sem contexto.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q20" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q20" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q20" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q20" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q20" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q21">
-  <legend><span class="question-number">21</span>Antes do pagamento, a cliente consegue conhecer os prazos, etapas, aprovações, condições de entrega e o que acontece se houver uma alteração ou um erro.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q21" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q21" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q21" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q21" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q21" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset></div>
+  <div class="question-list"><div class="question-card" data-question="q19">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">19</span><span>A minha página mostra fotografias ou vídeos recentes de produtos reais, incluindo detalhes, acabamento, tamanho, utilização ou resultado final.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q19" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q19" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q19" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q19" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q19" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q20">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">20</span><span>Mostro opiniões ou mensagens de clientes ligadas a produtos e experiências de encomenda concretas, em vez de elogios soltos sem contexto.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q20" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q20" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q20" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q20" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q20" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q21">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">21</span><span>Antes do pagamento, a cliente consegue conhecer os prazos, etapas, aprovações, condições de entrega e o que acontece se houver uma alteração ou um erro.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q21" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q21" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q21" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q21" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q21" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div></div>
 </section>
 <section class="module" aria-labelledby="module-caminho_compra">
   <div class="module-header"><h3 id="module-caminho_compra">8. Caminho de compra</h3><span>Perguntas 22-24</span></div>
-  <div class="question-list"><fieldset class="question-card" data-question="q22">
-  <legend><span class="question-number">22</span>Uma cliente consegue descobrir como encomendar sem ter de começar por perguntar “como faço para comprar?”.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q22" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q22" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q22" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q22" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q22" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q23">
-  <legend><span class="question-number">23</span>Antes de entrar em contacto, a cliente encontra a informação necessária para avançar, como preço ou valor inicial, opções, tamanho, quantidade, personalização, prazo e entrega, quando aplicável.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q23" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q23" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q23" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q23" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q23" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q24">
-  <legend><span class="question-number">24</span>Sigo etapas repetíveis para receber a encomenda e confirmo todos os dados antes de produzir, reservar ou enviar.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q24" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q24" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q24" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q24" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q24" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset></div>
+  <div class="question-list"><div class="question-card" data-question="q22">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">22</span><span>Uma cliente consegue descobrir como encomendar sem ter de começar por perguntar “como faço para comprar?”.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q22" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q22" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q22" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q22" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q22" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q23">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">23</span><span>Antes de entrar em contacto, a cliente encontra a informação necessária para avançar, como preço ou valor inicial, opções, tamanho, quantidade, personalização, prazo e entrega, quando aplicável.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q23" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q23" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q23" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q23" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q23" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q24">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">24</span><span>Sigo etapas repetíveis para receber a encomenda e confirmo todos os dados antes de produzir, reservar ou enviar.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q24" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q24" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q24" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q24" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q24" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div></div>
 </section>
 <section class="module" aria-labelledby="module-fecho_acompanhamento">
   <div class="module-header"><h3 id="module-fecho_acompanhamento">9. Fecho e acompanhamento</h3><span>Perguntas 25-27</span></div>
-  <div class="question-list"><fieldset class="question-card" data-question="q25">
-  <legend><span class="question-number">25</span>Quando alguém pergunta preço ou disponibilidade, respondo e faço uma pergunta útil ou indico uma ação concreta para a conversa avançar.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q25" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q25" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q25" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q25" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q25" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q26">
-  <legend><span class="question-number">26</span>Quando uma pessoa demonstra interesse concreto e deixa de responder, faço um acompanhamento breve e respeitoso em vez de abandonar imediatamente o contacto.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q26" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q26" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q26" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q26" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q26" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q27">
-  <legend><span class="question-number">27</span>Depois da entrega, confirmo se correu bem e crio oportunidade para receber uma opinião, recomendação ou nova encomenda.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q27" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q27" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q27" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q27" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q27" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset></div>
+  <div class="question-list"><div class="question-card" data-question="q25">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">25</span><span>Quando alguém pergunta preço ou disponibilidade, respondo e faço uma pergunta útil ou indico uma ação concreta para a conversa avançar.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q25" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q25" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q25" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q25" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q25" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q26">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">26</span><span>Quando uma pessoa demonstra interesse concreto e deixa de responder, faço um acompanhamento breve e respeitoso em vez de abandonar imediatamente o contacto.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q26" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q26" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q26" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q26" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q26" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q27">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">27</span><span>Depois da entrega, confirmo se correu bem e crio oportunidade para receber uma opinião, recomendação ou nova encomenda.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q27" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q27" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q27" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q27" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q27" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div></div>
 </section>
 <section class="module" aria-labelledby="module-ritmo_campanhas">
   <div class="module-header"><h3 id="module-ritmo_campanhas">10. Ritmo e campanhas</h3><span>Perguntas 28-30</span></div>
-  <div class="question-list"><fieldset class="question-card" data-question="q28">
-  <legend><span class="question-number">28</span>Tenho um plano para os próximos 30 dias que liga os produtos que quero vender aos conteúdos e às datas que interessam às minhas clientes.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q28" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q28" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q28" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q28" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q28" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q29">
-  <legend><span class="question-number">29</span>Preparo campanhas e lançamentos com tempo para fotografias, conteúdos, materiais, stock, personalização, produção e entrega.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q29" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q29" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q29" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q29" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q29" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset><fieldset class="question-card" data-question="q30">
-  <legend><span class="question-number">30</span>No final de uma campanha ou mês, revejo o que chamou atenção, gerou perguntas, vendeu ou ficou parado e uso essa leitura no plano seguinte.</legend>
-  <div class="scale"><label class="scale-option"><input type="radio" name="q30" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q30" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q30" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q30" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q30" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
-  <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
-</fieldset></div>
+  <div class="question-list"><div class="question-card" data-question="q28">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">28</span><span>Tenho um plano para os próximos 30 dias que liga os produtos que quero vender aos conteúdos e às datas que interessam às minhas clientes.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q28" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q28" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q28" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q28" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q28" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q29">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">29</span><span>Preparo campanhas e lançamentos com tempo para fotografias, conteúdos, materiais, stock, personalização, produção e entrega.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q29" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q29" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q29" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q29" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q29" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div><div class="question-card" data-question="q30">
+  <fieldset class="question-fieldset">
+    <legend><span class="question-title"><span class="question-number">30</span><span>No final de uma campanha ou mês, revejo o que chamou atenção, gerou perguntas, vendeu ou ficou parado e uso essa leitura no plano seguinte.</span></span></legend>
+    <div class="scale"><label class="scale-option"><input type="radio" name="q30" value="0" aria-label="Não sei, não existe ou não faço."><span>0</span></label><label class="scale-option"><input type="radio" name="q30" value="1" aria-label="Tenho uma ideia, mas quase nunca a aplico."><span>1</span></label><label class="scale-option"><input type="radio" name="q30" value="2" aria-label="Faço algumas vezes, sem consistência."><span>2</span></label><label class="scale-option"><input type="radio" name="q30" value="3" aria-label="Está claro e aplico na maioria das vezes."><span>3</span></label><label class="scale-option"><input type="radio" name="q30" value="4" aria-label="Está definido, aplico com consistência e tenho uma prova recente de que funciona."><span>4</span></label></div>
+    <div class="scale-legend"><span>Não existe</span><span>Algumas vezes</span><span>Consistente</span></div>
+  </fieldset>
+</div></div>
 </section>
       </section>
 
