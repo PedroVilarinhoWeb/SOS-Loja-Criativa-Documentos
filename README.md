@@ -1,5 +1,5 @@
 # SOS Diagnóstico 0-100
 
-O produto principal é a aplicação web em `index.html`. O cálculo, a gravação das respostas, o resultado completo e a partilha funcionam no navegador sem depender de JavaScript dentro de um PDF.
+O produto principal é o PDF interativo `SOS_Diagnostico_0-100_FINAL.pdf`.
 
-Os PDFs anteriores foram preservados em `arquivo-pdf/` apenas como histórico e não devem ser enviados às clientes como versão interativa.
+O ficheiro inclui respostas selecionáveis, cálculo automático, botão de cálculo, resultado completo por categoria e direção final. Os PDFs anteriores permanecem em `arquivo-pdf/` apenas como histórico.
