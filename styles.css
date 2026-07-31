@@ -449,7 +449,7 @@ html.has-convergence-preview .convergence-preview {
 .convergence-preview::before {
   content: "";
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   inset: 0;
   background: linear-gradient(
     90deg,
@@ -465,7 +465,7 @@ html.has-convergence-preview .convergence-preview {
 .convergence-preview::after {
   content: "";
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   right: 0;
   bottom: 0;
   left: 0;
@@ -475,7 +475,7 @@ html.has-convergence-preview .convergence-preview {
 
 .convergence-canvas {
   position: absolute;
-  z-index: 0;
+  z-index: 1;
   inset: 0;
   pointer-events: none;
 }
@@ -488,7 +488,7 @@ html.has-convergence-preview .convergence-preview {
 
 .convergence-inner {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   min-height: 520px;
   display: flex;
   align-items: center;
@@ -602,7 +602,10 @@ html.has-convergence-preview .convergence-preview {
 }
 
 .band-dark {
+  position: relative;
   padding: 74px 0;
+  overflow: hidden;
+  isolation: isolate;
   background: var(--green-900);
   color: var(--white);
 }
@@ -1078,14 +1081,40 @@ html.has-convergence-preview .convergence-preview {
 }
 
 .final-cta {
+  position: relative;
   padding: 92px 0;
+  overflow: hidden;
+  isolation: isolate;
   background: var(--green-950);
   color: var(--white);
   text-align: center;
 }
 
 .final-cta .section-inner {
+  position: relative;
+  z-index: 2;
   max-width: 780px;
+}
+
+.rising-lines-canvas {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  opacity: 0.74;
+  mix-blend-mode: screen;
+}
+
+.convergence-preview > .rising-lines-canvas {
+  opacity: 0.48;
+}
+
+.band-dark > .section-inner {
+  position: relative;
+  z-index: 2;
 }
 
 .final-cta img {
