@@ -37,12 +37,26 @@
   let particles = [];
   let imageData = null;
   let animationFrame = 0;
+  let settleTimer = 0;
   let introStart = 0;
   let introPlayed = false;
   let isVisible = true;
 
-  const introDuration = 1250;
-  const easeOut = (value) => 1 - Math.pow(1 - value, 3);
+  const introDuration = 2600;
+  const easeInOut = (value) =>
+    value < 0.5
+      ? 4 * value * value * value
+      : 1 - Math.pow(-2 * value + 2, 3) / 2;
+
+  const showSharpLogo = (delay) => {
+    window.clearTimeout(settleTimer);
+    settleTimer = window.setTimeout(() => {
+      if (!pointer.active) {
+        container.classList.remove("logo-particles-active");
+        container.classList.add("logo-particles-settled");
+      }
+    }, delay);
+  };
 
   const schedule = () => {
     if (!animationFrame && isVisible && !document.hidden) {
@@ -53,7 +67,7 @@
   const drawParticle = (buffer, particle, opacity) => {
     const centerX = Math.round(particle.x * deviceScale);
     const centerY = Math.round(particle.y * deviceScale);
-    const size = Math.max(2, Math.round(1.45 * deviceScale));
+    const size = Math.max(2, Math.round(1.05 * deviceScale));
     const half = size / 2;
     const startX = centerX - (size >> 1);
     const startY = centerY - (size >> 1);
@@ -92,7 +106,7 @@
     const introProgress = introStart
       ? Math.min(1, Math.max(0, (time - introStart) / introDuration))
       : 1;
-    const introEase = easeOut(introProgress);
+    const introEase = easeInOut(introProgress);
     const pointerRadius = Math.max(42, Math.min(58, width * 0.18));
     const pointerRadiusSquared = pointerRadius * pointerRadius;
     let moving = introProgress < 1;
@@ -143,6 +157,10 @@
       container.classList.add("logo-particles-ready");
     }
 
+    if (introProgress >= 1 && !pointer.active && !moving) {
+      container.classList.add("logo-particles-settled");
+    }
+
     if (moving || pointer.active) schedule();
   };
 
@@ -158,7 +176,10 @@
 
     width = nextWidth;
     height = nextHeight;
-    deviceScale = Math.min(2, window.devicePixelRatio || 1);
+    deviceScale = Math.max(
+      1.5,
+      Math.min(2.5, window.devicePixelRatio || 1),
+    );
     canvas.width = Math.round(width * deviceScale);
     canvas.height = Math.round(height * deviceScale);
     canvas.style.width = `${width}px`;
@@ -222,9 +243,14 @@
     }
 
     particles = nextParticles;
+    container.classList.remove(
+      "logo-particles-settled",
+      "logo-particles-active",
+    );
     if (!introPlayed) {
       introPlayed = true;
       introStart = performance.now();
+      showSharpLogo(introDuration + 480);
     } else {
       introStart = 0;
       particles.forEach((particle) => {
@@ -248,13 +274,22 @@
     pointer.x = x;
     pointer.y = y;
     pointer.active = true;
+    if (introPlayed && introStart && performance.now() - introStart >= introDuration) {
+      window.clearTimeout(settleTimer);
+      container.classList.remove("logo-particles-settled");
+      container.classList.add("logo-particles-active");
+    }
     schedule();
   };
 
   const releasePointer = () => {
     pointer.active = false;
+    container.classList.remove("logo-particles-active");
     pointer.previousX = -10000;
     pointer.previousY = -10000;
+    if (introPlayed && introStart && performance.now() - introStart >= introDuration) {
+      showSharpLogo(900);
+    }
     schedule();
   };
 

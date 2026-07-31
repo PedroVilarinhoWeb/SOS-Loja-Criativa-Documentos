@@ -269,14 +269,13 @@ summary:focus-visible {
   object-fit: contain;
   filter: drop-shadow(0 5px 9px rgba(11, 49, 41, 0.13));
   opacity: 1;
-  transition: opacity 260ms ease;
+  transition: opacity 420ms ease;
 }
 
 .spiral-brand canvas {
   pointer-events: none;
   opacity: 0;
-  filter: drop-shadow(0 5px 9px rgba(11, 49, 41, 0.11));
-  transition: opacity 260ms ease;
+  transition: opacity 420ms ease;
 }
 
 .spiral-brand.logo-particles-ready img {
@@ -284,6 +283,22 @@ summary:focus-visible {
 }
 
 .spiral-brand.logo-particles-ready canvas {
+  opacity: 1;
+}
+
+.spiral-brand.logo-particles-settled img {
+  opacity: 1;
+}
+
+.spiral-brand.logo-particles-settled canvas {
+  opacity: 0;
+}
+
+.spiral-brand.logo-particles-active img {
+  opacity: 0.12;
+}
+
+.spiral-brand.logo-particles-active canvas {
   opacity: 1;
 }
 
