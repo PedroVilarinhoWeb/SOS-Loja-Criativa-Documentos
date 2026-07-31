@@ -2,12 +2,16 @@
   const container = document.querySelector("[data-logo-particles]");
   if (!(container instanceof HTMLElement)) return;
 
-  const canvas = container.querySelector(".spiral-brand-particles");
-  const fallback = container.querySelector(".spiral-brand-fallback");
+  const canvas = container.querySelector(".hero-logo-particles");
+  const fallback = container.querySelector(".hero-logo-fallback");
+  const lens = container.querySelector(".hero-logo-lens");
+  const lensImage = container.querySelector(".hero-logo-lens-image");
   const source = container.dataset.logoSrc;
   if (
     !(canvas instanceof HTMLCanvasElement) ||
     !(fallback instanceof HTMLImageElement) ||
+    !(lens instanceof HTMLElement) ||
+    !(lensImage instanceof HTMLImageElement) ||
     !source
   ) {
     return;
@@ -19,17 +23,8 @@
   const context = canvas.getContext("2d", { alpha: true });
   if (!context) return;
 
-  const image = new Image();
-  image.decoding = "async";
-
-  const pointer = {
-    x: -10000,
-    y: -10000,
-    previousX: -10000,
-    previousY: -10000,
-    speed: 0,
-    active: false,
-  };
+  const sourceImage = new Image();
+  sourceImage.decoding = "async";
 
   let width = 0;
   let height = 0;
@@ -37,7 +32,6 @@
   let particles = [];
   let imageData = null;
   let animationFrame = 0;
-  let settleTimer = 0;
   let introStart = 0;
   let introPlayed = false;
   let isVisible = true;
@@ -48,19 +42,9 @@
       ? 4 * value * value * value
       : 1 - Math.pow(-2 * value + 2, 3) / 2;
 
-  const showSharpLogo = (delay) => {
-    window.clearTimeout(settleTimer);
-    settleTimer = window.setTimeout(() => {
-      if (!pointer.active) {
-        container.classList.remove("logo-particles-active");
-        container.classList.add("logo-particles-settled");
-      }
-    }, delay);
-  };
-
-  const schedule = () => {
+  const scheduleIntro = () => {
     if (!animationFrame && isVisible && !document.hidden) {
-      animationFrame = requestAnimationFrame(render);
+      animationFrame = requestAnimationFrame(renderIntro);
     }
   };
 
@@ -96,78 +80,47 @@
     }
   };
 
-  const render = (time) => {
+  function renderIntro(time) {
     animationFrame = 0;
     if (!imageData || !particles.length || !isVisible || document.hidden) return;
 
     imageData.data.fill(0);
-    pointer.speed *= 0.86;
-
-    const introProgress = introStart
+    const progress = introStart
       ? Math.min(1, Math.max(0, (time - introStart) / introDuration))
       : 1;
-    const introEase = easeInOut(introProgress);
-    const pointerRadius = Math.max(42, Math.min(58, width * 0.18));
-    const pointerRadiusSquared = pointerRadius * pointerRadius;
-    let moving = introProgress < 1;
+    const easedProgress = easeInOut(progress);
 
     particles.forEach((particle) => {
-      if (introProgress < 1) {
-        particle.x = particle.startX + (particle.homeX - particle.startX) * introEase;
-        particle.y = particle.startY + (particle.homeY - particle.startY) * introEase;
-      } else {
-        if (pointer.active) {
-          const deltaX = particle.x - pointer.x;
-          const deltaY = particle.y - pointer.y;
-          const distanceSquared = deltaX * deltaX + deltaY * deltaY;
-
-          if (distanceSquared > 0 && distanceSquared < pointerRadiusSquared) {
-            const distance = Math.sqrt(distanceSquared);
-            const force =
-              (1 - distance / pointerRadius) *
-              (0.8 + Math.min(2.4, pointer.speed * 0.055));
-            particle.velocityX += (deltaX / distance) * force;
-            particle.velocityY += (deltaY / distance) * force;
-          }
-        }
-
-        particle.velocityX += (particle.homeX - particle.x) * 0.052;
-        particle.velocityY += (particle.homeY - particle.y) * 0.052;
-        particle.velocityX *= 0.82;
-        particle.velocityY *= 0.82;
-        particle.x += particle.velocityX;
-        particle.y += particle.velocityY;
-
-        if (
-          Math.abs(particle.homeX - particle.x) > 0.025 ||
-          Math.abs(particle.homeY - particle.y) > 0.025 ||
-          Math.abs(particle.velocityX) > 0.025 ||
-          Math.abs(particle.velocityY) > 0.025
-        ) {
-          moving = true;
-        }
-      }
-
-      const opacity = introProgress < 1 ? 0.18 + introEase * 0.82 : 1;
-      drawParticle(imageData.data, particle, opacity);
+      particle.x =
+        particle.startX + (particle.homeX - particle.startX) * easedProgress;
+      particle.y =
+        particle.startY + (particle.homeY - particle.startY) * easedProgress;
+      drawParticle(
+        imageData.data,
+        particle,
+        0.14 + easedProgress * 0.86,
+      );
     });
 
     context.putImageData(imageData, 0, 0);
-    if (!container.classList.contains("logo-particles-ready")) {
-      container.classList.add("logo-particles-ready");
-    }
+    container.classList.add("logo-particles-ready");
 
-    if (introProgress >= 1 && !pointer.active && !moving) {
+    if (progress < 1) {
+      scheduleIntro();
+    } else {
       container.classList.add("logo-particles-settled");
     }
-
-    if (moving || pointer.active) schedule();
-  };
+  }
 
   const buildParticles = () => {
     const nextWidth = Math.round(container.clientWidth);
     const nextHeight = Math.round(container.clientHeight);
-    if (!nextWidth || !nextHeight || !image.naturalWidth || !image.naturalHeight) {
+    if (
+      !nextWidth ||
+      !nextHeight ||
+      !sourceImage.naturalWidth ||
+      !sourceImage.naturalHeight
+    ) {
       return;
     }
 
@@ -189,10 +142,12 @@
     const sampleCanvas = document.createElement("canvas");
     sampleCanvas.width = width;
     sampleCanvas.height = height;
-    const sampleContext = sampleCanvas.getContext("2d", { willReadFrequently: true });
+    const sampleContext = sampleCanvas.getContext("2d", {
+      willReadFrequently: true,
+    });
     if (!sampleContext) return;
 
-    const imageRatio = image.naturalWidth / image.naturalHeight;
+    const imageRatio = sourceImage.naturalWidth / sourceImage.naturalHeight;
     const containerRatio = width / height;
     let drawWidth = width;
     let drawHeight = height;
@@ -203,22 +158,26 @@
     }
     const drawX = (width - drawWidth) / 2;
     const drawY = (height - drawHeight) / 2;
-    sampleContext.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+    sampleContext.drawImage(
+      sourceImage,
+      drawX,
+      drawY,
+      drawWidth,
+      drawHeight,
+    );
 
     let sourcePixels;
     try {
       sourcePixels = sampleContext.getImageData(0, 0, width, height).data;
     } catch (error) {
-      console.warn("[SOS Logo] Não foi possível preparar o efeito de partículas.", error);
+      console.warn("[SOS Logo] Não foi possível preparar as partículas.", error);
       return;
     }
 
-    const gap = 2;
     const nextParticles = [];
     const spread = Math.min(width, height) * 0.46;
-
-    for (let y = 0; y < height; y += gap) {
-      for (let x = 0; x < width; x += gap) {
+    for (let y = 0; y < height; y += 2) {
+      for (let x = 0; x < width; x += 2) {
         const index = (y * width + x) * 4;
         const alpha = sourcePixels[index + 3];
         if (alpha < 24) continue;
@@ -232,8 +191,6 @@
           startY: y + Math.sin(angle) * distance,
           homeX: x,
           homeY: y,
-          velocityX: 0,
-          velocityY: 0,
           r: sourcePixels[index],
           g: sourcePixels[index + 1],
           b: sourcePixels[index + 2],
@@ -243,61 +200,80 @@
     }
 
     particles = nextParticles;
-    container.classList.remove(
-      "logo-particles-settled",
-      "logo-particles-active",
-    );
     if (!introPlayed) {
       introPlayed = true;
       introStart = performance.now();
-      showSharpLogo(introDuration + 480);
-    } else {
-      introStart = 0;
-      particles.forEach((particle) => {
-        particle.x = particle.homeX;
-        particle.y = particle.homeY;
-      });
+      container.classList.remove("logo-particles-settled");
+      scheduleIntro();
     }
-    schedule();
   };
 
-  const updatePointer = (event) => {
+  const lensState = {
+    currentX: 0,
+    currentY: 0,
+    targetX: 0,
+    targetY: 0,
+    frame: 0,
+    visible: false,
+  };
+
+  const positionLens = () => {
+    lensState.frame = 0;
+    if (!lensState.visible) return;
+
+    lensState.currentX += (lensState.targetX - lensState.currentX) * 0.28;
+    lensState.currentY += (lensState.targetY - lensState.currentY) * 0.28;
+
+    const lensSize = lens.offsetWidth;
+    const half = lensSize / 2;
+    const centerX = Math.min(width - half, Math.max(half, lensState.currentX));
+    const centerY = Math.min(height - half, Math.max(half, lensState.currentY));
+    const zoom = 1.24;
+
+    lens.style.left = `${centerX - half}px`;
+    lens.style.top = `${centerY - half}px`;
+    lensImage.style.width = `${width * zoom}px`;
+    lensImage.style.height = `${height * zoom}px`;
+    lensImage.style.left = `${half - lensState.currentX * zoom}px`;
+    lensImage.style.top = `${half - lensState.currentY * zoom}px`;
+
+    if (
+      Math.abs(lensState.targetX - lensState.currentX) > 0.1 ||
+      Math.abs(lensState.targetY - lensState.currentY) > 0.1
+    ) {
+      lensState.frame = requestAnimationFrame(positionLens);
+    }
+  };
+
+  const showLens = (event) => {
+    if (!container.classList.contains("logo-particles-settled")) return;
+
     const bounds = container.getBoundingClientRect();
     const x = event.clientX - bounds.left;
     const y = event.clientY - bounds.top;
-
-    if (pointer.previousX > -9000) {
-      pointer.speed = Math.hypot(x - pointer.previousX, y - pointer.previousY);
+    if (!lensState.visible) {
+      lensState.currentX = x;
+      lensState.currentY = y;
     }
-    pointer.previousX = x;
-    pointer.previousY = y;
-    pointer.x = x;
-    pointer.y = y;
-    pointer.active = true;
-    if (introPlayed && introStart && performance.now() - introStart >= introDuration) {
-      window.clearTimeout(settleTimer);
-      container.classList.remove("logo-particles-settled");
-      container.classList.add("logo-particles-active");
-    }
-    schedule();
+    lensState.targetX = x;
+    lensState.targetY = y;
+    lensState.visible = true;
+    container.classList.add("logo-lens-active");
+    if (!lensState.frame) lensState.frame = requestAnimationFrame(positionLens);
   };
 
-  const releasePointer = () => {
-    pointer.active = false;
-    container.classList.remove("logo-particles-active");
-    pointer.previousX = -10000;
-    pointer.previousY = -10000;
-    if (introPlayed && introStart && performance.now() - introStart >= introDuration) {
-      showSharpLogo(900);
-    }
-    schedule();
+  const hideLens = () => {
+    lensState.visible = false;
+    container.classList.remove("logo-lens-active");
+    if (lensState.frame) cancelAnimationFrame(lensState.frame);
+    lensState.frame = 0;
   };
 
-  container.addEventListener("pointermove", updatePointer, { passive: true });
-  container.addEventListener("pointerdown", updatePointer, { passive: true });
-  container.addEventListener("pointerleave", releasePointer, { passive: true });
-  container.addEventListener("pointercancel", releasePointer, { passive: true });
-  window.addEventListener("pointerup", releasePointer, { passive: true });
+  container.addEventListener("pointermove", showLens, { passive: true });
+  container.addEventListener("pointerdown", showLens, { passive: true });
+  container.addEventListener("pointerleave", hideLens, { passive: true });
+  container.addEventListener("pointercancel", hideLens, { passive: true });
+  window.addEventListener("pointerup", hideLens, { passive: true });
 
   const resizeObserver = new ResizeObserver(buildParticles);
   resizeObserver.observe(container);
@@ -305,8 +281,9 @@
   const visibilityObserver = new IntersectionObserver(
     ([entry]) => {
       isVisible = entry.isIntersecting;
-      if (isVisible) schedule();
-      else if (animationFrame) {
+      if (isVisible && introPlayed && !container.classList.contains("logo-particles-settled")) {
+        scheduleIntro();
+      } else if (!isVisible && animationFrame) {
         cancelAnimationFrame(animationFrame);
         animationFrame = 0;
       }
@@ -319,14 +296,17 @@
     if (document.hidden && animationFrame) {
       cancelAnimationFrame(animationFrame);
       animationFrame = 0;
-    } else {
-      schedule();
+    } else if (!document.hidden) {
+      scheduleIntro();
     }
   });
 
-  image.addEventListener("load", buildParticles, { once: true });
-  image.addEventListener("error", () => {
-    container.classList.remove("logo-particles-ready");
+  sourceImage.addEventListener("load", buildParticles, { once: true });
+  sourceImage.addEventListener("error", () => {
+    container.classList.remove(
+      "logo-particles-ready",
+      "logo-particles-settled",
+    );
   });
-  image.src = source;
+  sourceImage.src = source;
 })();
