@@ -268,6 +268,18 @@ summary:focus-visible {
 }
 
 .hero-logo-particles {
+  -webkit-mask-image: radial-gradient(
+    ellipse at center,
+    #000 0%,
+    #000 86%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse at center,
+    #000 0%,
+    #000 86%,
+    transparent 100%
+  );
   pointer-events: none;
   opacity: 0;
   transition: opacity 420ms ease;

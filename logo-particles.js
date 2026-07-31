@@ -34,6 +34,7 @@
   let animationFrame = 0;
   let introStart = 0;
   let introPlayed = false;
+  let replayPending = false;
   let isVisible = true;
 
   const introDuration = 2600;
@@ -269,11 +270,32 @@
     lensState.frame = 0;
   };
 
+  const replayIntro = () => {
+    hideLens();
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    animationFrame = 0;
+    introStart = 0;
+    replayPending = true;
+    container.classList.remove("logo-particles-settled");
+
+    particles.forEach((particle) => {
+      particle.x = particle.startX;
+      particle.y = particle.startY;
+    });
+
+    if (isVisible && particles.length) {
+      replayPending = false;
+      introStart = performance.now();
+      scheduleIntro();
+    }
+  };
+
   container.addEventListener("pointermove", showLens, { passive: true });
   container.addEventListener("pointerdown", showLens, { passive: true });
   container.addEventListener("pointerleave", hideLens, { passive: true });
   container.addEventListener("pointercancel", hideLens, { passive: true });
   window.addEventListener("pointerup", hideLens, { passive: true });
+  window.addEventListener("sos:replay-logo", replayIntro);
 
   const resizeObserver = new ResizeObserver(buildParticles);
   resizeObserver.observe(container);
@@ -282,6 +304,10 @@
     ([entry]) => {
       isVisible = entry.isIntersecting;
       if (isVisible && introPlayed && !container.classList.contains("logo-particles-settled")) {
+        if (replayPending || !introStart) {
+          replayPending = false;
+          introStart = performance.now();
+        }
         scheduleIntro();
       } else if (!isVisible && animationFrame) {
         cancelAnimationFrame(animationFrame);

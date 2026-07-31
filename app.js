@@ -15,6 +15,11 @@ const pageParameters = new URLSearchParams(window.location.search);
 const motionEnabled = !pageParameters.has("static");
 document.documentElement.classList.toggle("motion-enabled", motionEnabled);
 
+const backToTopButton = document.querySelector(".back-to-top");
+backToTopButton?.addEventListener("click", () => {
+  window.dispatchEvent(new Event("sos:replay-logo"));
+});
+
 function initConvergencePreview() {
   document.documentElement.classList.add("has-convergence-preview");
   const script = document.createElement("script");
