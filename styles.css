@@ -1700,13 +1700,13 @@ html.has-convergence-preview .convergence-preview {
 :is(.button, .branch-tab, .mobile-cta) {
   --sos-button-angle: 0deg;
   --sos-button-surface: var(--green-900);
-  --sos-button-border: rgba(180, 135, 43, 0.3);
-  --sos-button-highlight: rgba(255, 255, 255, 0.95);
-  --sos-button-accent: var(--gold-200);
-  --sos-button-aura: rgba(180, 135, 43, 0.46);
+  --sos-button-border: rgba(180, 135, 43, 0.68);
+  --sos-button-highlight: rgba(255, 232, 174, 0.98);
+  --sos-button-accent: var(--gold-500);
+  --sos-button-aura: rgba(180, 135, 43, 0.56);
   isolation: isolate;
   overflow: hidden;
-  border-width: 2px;
+  border-width: 4px;
   border-color: transparent;
   background:
     linear-gradient(var(--sos-button-surface), var(--sos-button-surface)) padding-box,
@@ -1737,7 +1737,7 @@ html.has-convergence-preview .convergence-preview {
   content: "";
   position: absolute;
   z-index: 1;
-  inset: 2px;
+  inset: 4px;
   border-radius: inherit;
   background: rgba(255, 255, 255, 0.62);
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='24' viewBox='0 0 28 24'%3E%3Cpath fill='black' d='m14 5 .8 2.2L17 8l-2.2.8L14 11l-.8-2.2L11 8l2.2-.8L14 5Zm9 7 .55 1.45L25 14l-1.45.55L23 16l-.55-1.45L21 14l1.45-.55L23 12ZM5 14l.7 1.8 1.8.7-1.8.7L5 19l-.7-1.8-1.8-.7 1.8-.7L5 14Z'/%3E%3C/svg%3E");
@@ -1792,10 +1792,10 @@ html.has-convergence-preview .convergence-preview {
 
 .button-gold {
   --sos-button-surface: var(--gold-500);
-  --sos-button-border: rgba(23, 61, 52, 0.56);
-  --sos-button-highlight: rgba(255, 255, 255, 0.92);
+  --sos-button-border: rgba(23, 61, 52, 0.82);
+  --sos-button-highlight: rgba(112, 157, 143, 0.98);
   --sos-button-accent: var(--green-700);
-  --sos-button-aura: rgba(23, 61, 52, 0.32);
+  --sos-button-aura: rgba(23, 61, 52, 0.46);
 }
 
 .button-gold:hover,
@@ -1805,16 +1805,18 @@ html.has-convergence-preview .convergence-preview {
 
 .branch-tab {
   --sos-button-surface: var(--white);
-  --sos-button-border: var(--line);
-  --sos-button-highlight: rgba(180, 135, 43, 0.88);
-  --sos-button-aura: rgba(180, 135, 43, 0.3);
+  --sos-button-border: rgba(180, 135, 43, 0.58);
+  --sos-button-highlight: rgba(255, 232, 174, 0.98);
+  --sos-button-accent: var(--gold-500);
+  --sos-button-aura: rgba(180, 135, 43, 0.42);
 }
 
 .branch-tab.is-active {
   --sos-button-surface: var(--green-900);
-  --sos-button-border: rgba(180, 135, 43, 0.34);
-  --sos-button-accent: var(--gold-200);
-  --sos-button-highlight: rgba(255, 255, 255, 0.96);
+  --sos-button-border: rgba(180, 135, 43, 0.68);
+  --sos-button-accent: var(--gold-500);
+  --sos-button-highlight: rgba(255, 232, 174, 0.98);
+  --sos-button-aura: rgba(180, 135, 43, 0.48);
 }
 
 .mobile-cta {
