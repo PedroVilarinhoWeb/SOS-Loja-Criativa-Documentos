@@ -1549,13 +1549,13 @@ html.has-convergence-preview .convergence-preview {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html:not(.motion-enabled) {
     scroll-behavior: auto;
   }
 
-  *,
-  *::before,
-  *::after {
+  html:not(.motion-enabled) *,
+  html:not(.motion-enabled) *::before,
+  html:not(.motion-enabled) *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

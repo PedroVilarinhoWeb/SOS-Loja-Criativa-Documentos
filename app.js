@@ -11,10 +11,11 @@ const spiralModules = [
   { src: "assets/spiral/module-10.webp", title: "SOS-10 Ritmo e Campanhas" },
 ];
 
-function initConvergencePreview() {
-  const parameters = new URLSearchParams(window.location.search);
-  if (!parameters.has("convergence")) return;
+const pageParameters = new URLSearchParams(window.location.search);
+const motionEnabled = !pageParameters.has("static");
+document.documentElement.classList.toggle("motion-enabled", motionEnabled);
 
+function initConvergencePreview() {
   document.documentElement.classList.add("has-convergence-preview");
   const script = document.createElement("script");
   script.src = "convergence.bundle.js";
@@ -46,9 +47,7 @@ function initSosSpiral() {
   const turns = 1.45;
   const speed = 0.019;
   const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const forceMotionForLocalReview =
-    ["127.0.0.1", "localhost"].includes(window.location.hostname) &&
-    new URLSearchParams(window.location.search).has("force-motion");
+  const forceMotionForLocalReview = motionEnabled;
   const prefersReducedMotion = () =>
     motionPreference.matches && !forceMotionForLocalReview;
   const images = spiralModules.map(({ src }) => {
@@ -319,9 +318,7 @@ function initPlanCarousel() {
     title.replace(/^SOS-(\d+)\s+/, "$1 · "),
   );
   const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const forceMotionForLocalReview =
-    ["127.0.0.1", "localhost"].includes(window.location.hostname) &&
-    new URLSearchParams(window.location.search).has("force-motion");
+  const forceMotionForLocalReview = motionEnabled;
   const prefersReducedMotion = () =>
     motionPreference.matches && !forceMotionForLocalReview;
   const segmenter =

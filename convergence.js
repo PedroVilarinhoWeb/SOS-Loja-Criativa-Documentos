@@ -203,8 +203,7 @@ export function mountConvergencePreview() {
 
   canvas.dataset.mounted = "true";
   const forceMotionForLocalReview =
-    ["127.0.0.1", "localhost"].includes(window.location.hostname) &&
-    new URLSearchParams(window.location.search).has("force-motion");
+    document.documentElement.classList.contains("motion-enabled");
   const reducedMotion =
     window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
     !forceMotionForLocalReview;
