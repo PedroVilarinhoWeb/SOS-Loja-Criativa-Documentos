@@ -18,7 +18,7 @@ document.documentElement.classList.toggle("motion-enabled", motionEnabled);
 function initConvergencePreview() {
   document.documentElement.classList.add("has-convergence-preview");
   const script = document.createElement("script");
-  script.src = "convergence.bundle.js";
+  script.src = "convergence.bundle.js?v=20260731-motion-default";
   script.async = true;
   script.addEventListener("load", () => {
     if (window.SOSConvergence?.mountConvergencePreview) {
