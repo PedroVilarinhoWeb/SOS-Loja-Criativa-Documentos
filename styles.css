@@ -250,13 +250,41 @@ summary:focus-visible {
   top: 50%;
   left: 50%;
   width: clamp(250px, 25vw, 310px);
+  aspect-ratio: 1600 / 1381;
+  pointer-events: auto;
+  touch-action: pan-y;
   transform: translate(-50%, -34.4%);
 }
 
-.spiral-brand img {
+.spiral-brand img,
+.spiral-brand canvas {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  height: auto;
+  height: 100%;
+  display: block;
+}
+
+.spiral-brand img {
+  object-fit: contain;
   filter: drop-shadow(0 5px 9px rgba(11, 49, 41, 0.13));
+  opacity: 1;
+  transition: opacity 260ms ease;
+}
+
+.spiral-brand canvas {
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 5px 9px rgba(11, 49, 41, 0.11));
+  transition: opacity 260ms ease;
+}
+
+.spiral-brand.logo-particles-ready img {
+  opacity: 0;
+}
+
+.spiral-brand.logo-particles-ready canvas {
+  opacity: 1;
 }
 
 .hero-inner {
