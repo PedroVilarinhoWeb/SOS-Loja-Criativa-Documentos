@@ -38,19 +38,46 @@
 
   <main id="conteudo">
     <section class="hero" id="inicio">
-      <div class="hero-media" aria-hidden="true">
-        <img src="assets/editorial/hero-workshop.webp" alt="" width="2000" height="1250" fetchpriority="high">
+      <div class="spiral-scene" data-sos-spiral aria-hidden="true">
+        <canvas id="sos-spiral-canvas"></canvas>
+        <div class="spiral-brand">
+          <img src="assets/logo-vertical.svg" alt="" width="1600" height="1381">
+        </div>
       </div>
       <div class="hero-inner">
-        <p class="eyebrow">Diagnóstico gratuito + plano aplicado ao teu ramo</p>
-        <h1>Planos SOS para lojas criativas</h1>
-        <p class="hero-lead">Descobre o que está a travar a tua loja e trabalha primeiro no ponto que está a puxar os restantes para trás.</p>
-        <div class="hero-actions">
-          <a class="button" href="diagnostico/index.html">Fazer o diagnóstico gratuito</a>
-          <a class="text-link" href="#como-funciona">Perceber antes de avançar <span aria-hidden="true">↓</span></a>
+        <div class="hero-copy">
+          <div class="plan-carousel" data-plan-carousel aria-hidden="true">
+            <p class="plan-carousel-title">10 Planos SOS · 7 ramos</p>
+            <div class="plan-carousel-row">
+              <span class="plan-carousel-prefix">
+                <img src="assets/logo-monogram.svg" alt="" width="1600" height="953">
+              </span>
+              <span class="plan-carousel-badge" data-plan-carousel-badge>
+                <span class="plan-carousel-text" data-plan-carousel-text>01 · Cliente e Momento de Compra</span>
+              </span>
+            </div>
+          </div>
+          <h1>Planos SOS para lojas criativas</h1>
+          <p class="hero-lead">Descobre o que está a travar a tua loja e trabalha primeiro no ponto que está a puxar os restantes para trás.</p>
+          <div class="hero-actions">
+            <a class="button" href="diagnostico/index.html">Fazer o diagnóstico gratuito</a>
+            <a class="text-link" href="#como-funciona">Perceber antes de avançar <span aria-hidden="true">↓</span></a>
+          </div>
+          <p class="hero-trust">Sem promessas de seguidores. Sem fórmulas copiadas. Sem pagar antes de saber por onde começar.</p>
         </div>
-        <p class="hero-trust">Sem promessas de seguidores. Sem fórmulas copiadas. Sem pagar antes de saber por onde começar.</p>
       </div>
+      <ol class="visually-hidden">
+        <li>SOS-01 Cliente e Momento de Compra</li>
+        <li>SOS-02 Posicionamento que se Percebe</li>
+        <li>SOS-03 Oferta Principal</li>
+        <li>SOS-04 Preço e Valor Percebido</li>
+        <li>SOS-05 Conteúdo e Hooks</li>
+        <li>SOS-06 Alcance e Divulgação</li>
+        <li>SOS-07 Prova e Confiança</li>
+        <li>SOS-08 Caminho de Compra</li>
+        <li>SOS-09 Fecho e Acompanhamento</li>
+        <li>SOS-10 Ritmo e Campanhas</li>
+      </ol>
     </section>
 
     <section class="recognition band">
@@ -62,6 +89,24 @@
         <div class="recognition-copy">
           <p>Podes estar a publicar e não receber perguntas. Receber perguntas e perder a venda quando dizes o preço. Ter bons produtos, mas mostrar tantos que ninguém percebe por onde começar. Ou trabalhar todos os dias sem saber o que trouxe a última encomenda.</p>
           <p><strong>Estes problemas não se resolvem todos da mesma forma.</strong> O primeiro passo é separar o sintoma do bloqueio que o está a provocar.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="convergence-preview" id="convergencia-sos" data-convergence-preview aria-labelledby="convergence-title">
+      <div class="convergence-canvas" aria-hidden="true">
+        <canvas data-convergence-canvas></canvas>
+      </div>
+      <div class="section-inner convergence-inner">
+        <div class="convergence-copy">
+          <p class="eyebrow eyebrow-light">Convergência SOS</p>
+          <h2 id="convergence-title">Muitas fragilidades. Uma prioridade para trabalhar primeiro.</h2>
+          <p>Conteúdo, preço, posicionamento, divulgação e caminho de compra podem parecer urgentes ao mesmo tempo. O Diagnóstico cruza as respostas e afunila o ruído até encontrar o ponto que está a pesar mais na loja.</p>
+          <div class="convergence-direction" aria-label="Trinta respostas transformadas numa direção">
+            <span>30 respostas</span>
+            <i aria-hidden="true"></i>
+            <strong>1 direção</strong>
+          </div>
         </div>
       </div>
     </section>
@@ -132,7 +177,7 @@
 
         <div class="branch-stage" aria-live="polite">
           <div class="branch-image-wrap">
-            <img id="branch-image" src="assets/editorial/personalizados.webp" alt="Criadora a preparar o desenho de uma peça personalizada no seu espaço de trabalho" width="1440" height="960" loading="lazy">
+            <img id="branch-image" src="assets/editorial/personalizados.webp" alt="Sacola e caneca personalizadas com o logótipo SOS Loja Criativa numa bancada de trabalho" width="1440" height="960" loading="lazy">
           </div>
           <div class="branch-copy">
             <p class="branch-kicker" id="branch-kicker">Personalizados e presentes à medida</p>
