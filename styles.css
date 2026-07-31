@@ -1240,6 +1240,17 @@ html.has-convergence-preview .convergence-preview {
   margin-bottom: 0;
 }
 
+.footer-meta {
+  display: grid;
+  justify-items: end;
+  gap: 16px;
+  text-align: right;
+}
+
+.back-to-top {
+  min-width: 168px;
+}
+
 .mobile-cta {
   display: none;
 }
@@ -1585,6 +1596,11 @@ html.has-convergence-preview .convergence-preview {
     grid-template-columns: 1fr;
     gap: 24px;
     padding: 38px 0;
+  }
+
+  .footer-meta {
+    justify-items: start;
+    text-align: left;
   }
 
   .mobile-cta {
