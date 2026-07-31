@@ -1,14 +1,64 @@
 const planModules = [
-  { title: "SOS-01 Cliente e Momento de Compra" },
-  { title: "SOS-02 Posicionamento que se Percebe" },
-  { title: "SOS-03 Oferta Principal" },
-  { title: "SOS-04 Preço e Valor Percebido" },
-  { title: "SOS-05 Conteúdo e Hooks" },
-  { title: "SOS-06 Alcance e Divulgação" },
-  { title: "SOS-07 Prova e Confiança" },
-  { title: "SOS-08 Caminho de Compra" },
-  { title: "SOS-09 Fecho e Acompanhamento" },
-  { title: "SOS-10 Ritmo e Campanhas" },
+  {
+    title: "SOS-01 Cliente e Momento de Compra",
+    problem: "A loja não distingue quem faz a encomenda de quem vai receber ou utilizar o produto.",
+    work: "Usas perguntas, encomendas e situações reais para separar compradora, destinatária e motivo de compra.",
+    result: "Uma leitura concreta de quem compra e das situações que fazem a procura começar.",
+  },
+  {
+    title: "SOS-02 Posicionamento que se Percebe",
+    problem: "Quem chega à página vê produtos, mas não percebe rapidamente o que a loja vende nem para quem trabalha.",
+    work: "Revês apresentação, oferta visível, linguagem e sinais que ajudam a loja a ser entendida em poucos segundos.",
+    result: "Uma explicação curta e coerente da loja, pronta para orientar o perfil e a comunicação.",
+  },
+  {
+    title: "SOS-03 Oferta Principal",
+    problem: "A loja mostra vários produtos com o mesmo peso e a cliente não sabe por onde começar.",
+    work: "Comparas procura, margem, capacidade, prova e função de cada produto para escolher a oferta principal.",
+    result: "Uma oferta de entrada e critérios para decidir o que deve receber prioridade.",
+  },
+  {
+    title: "SOS-04 Preço e Valor Percebido",
+    problem: "O preço aparece antes de a cliente perceber materiais, processo, condições e valor da escolha.",
+    work: "Organizas aquilo que precisa de estar visível antes do preço e a forma de apresentar opções sem desvalorizar.",
+    result: "Uma apresentação clara do preço, das condições e do valor percebido.",
+  },
+  {
+    title: "SOS-05 Conteúdo e Hooks",
+    problem: "As publicações mostram o produto, mas não dão à compradora uma razão concreta para parar e reconhecer a situação.",
+    work: "Transformas produto, utilização, dúvida, ocasião e prova em hooks e peças de conteúdo.",
+    result: "Matéria organizada para criar conteúdo ligado ao que a cliente procura.",
+  },
+  {
+    title: "SOS-06 Alcance e Divulgação",
+    problem: "A divulgação depende dos seguidores atuais e de publicações soltas sem um destino definido.",
+    work: "Escolhes canais, ações, parceiros e formatos adequados à oferta e à capacidade real da loja.",
+    result: "Um plano que indica onde divulgar, o que levar e como avaliar a resposta.",
+  },
+  {
+    title: "SOS-07 Prova e Confiança",
+    problem: "A cliente precisa de confiar, mas encontra elogios vagos ou pouca prova do produto e do processo.",
+    work: "Recolhes provas específicas e ligas cada uma à dúvida que precisa de reduzir.",
+    result: "Um mapa de provas para utilizar no perfil, no conteúdo e na conversa de venda.",
+  },
+  {
+    title: "SOS-08 Caminho de Compra",
+    problem: "A pessoa interessa-se, mas não percebe como escolher, encomendar, pagar ou receber.",
+    work: "Mapeias os passos reais da compra e retiras perguntas e bloqueios que podem ser evitados.",
+    result: "Um caminho de compra claro, desde a primeira visita até à confirmação da encomenda.",
+  },
+  {
+    title: "SOS-09 Fecho e Acompanhamento",
+    problem: "Existem conversas que param depois do preço, de uma dúvida ou da resposta “vou pensar”.",
+    work: "Preparas respostas, momentos de retoma e acompanhamento sem pressionar a cliente.",
+    result: "Um sistema de conversa que ajuda a avançar e regista o que ficou pendente.",
+  },
+  {
+    title: "SOS-10 Ritmo e Campanhas",
+    problem: "Produtos, datas e conteúdos entram em campanha sem respeitar o tempo e a capacidade de produção.",
+    work: "Cruzas calendário, procura, produção, stock e divulgação antes de prometer.",
+    result: "Um ritmo de campanhas executável e critérios para repetir, reduzir ou ajustar.",
+  },
 ];
 
 const pageParameters = new URLSearchParams(window.location.search);
@@ -190,6 +240,61 @@ function initPlanCarousel() {
 }
 
 initPlanCarousel();
+
+function initPlanShowcase() {
+  const showcase = document.querySelector("[data-plan-showcase]");
+  if (!(showcase instanceof HTMLElement)) return;
+
+  const covers = Array.from(showcase.querySelectorAll("[data-plan-index]"));
+  const code = showcase.querySelector("#plan-detail-code");
+  const title = showcase.querySelector("#plan-detail-title");
+  const problem = showcase.querySelector("#plan-detail-problem");
+  const work = showcase.querySelector("#plan-detail-work");
+  const result = showcase.querySelector("#plan-detail-result");
+  if (!covers.length || !code || !title || !problem || !work || !result) return;
+
+  const renderPlan = (index, keepCoverVisible = false) => {
+    const plan = planModules[index];
+    const selectedCover = covers[index];
+    if (!plan || !(selectedCover instanceof HTMLElement)) return;
+
+    const match = plan.title.match(/^(SOS-\d+)\s+(.+)$/);
+    code.textContent = match?.[1] || `SOS-${String(index + 1).padStart(2, "0")}`;
+    title.textContent = match?.[2] || plan.title;
+    problem.textContent = plan.problem;
+    work.textContent = plan.work;
+    result.textContent = plan.result;
+
+    covers.forEach((cover, coverIndex) => {
+      const selected = coverIndex === index;
+      cover.classList.toggle("is-active", selected);
+      cover.setAttribute("aria-pressed", String(selected));
+    });
+
+    if (keepCoverVisible) {
+      selectedCover.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  };
+
+  covers.forEach((cover, index) => {
+    cover.addEventListener("click", () => renderPlan(index));
+    cover.addEventListener("keydown", (event) => {
+      let nextIndex = null;
+      if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (index + 1) % covers.length;
+      if (event.key === "ArrowLeft" || event.key === "ArrowUp") nextIndex = (index - 1 + covers.length) % covers.length;
+      if (event.key === "Home") nextIndex = 0;
+      if (event.key === "End") nextIndex = covers.length - 1;
+      if (nextIndex === null) return;
+      event.preventDefault();
+      covers[nextIndex].focus();
+      renderPlan(nextIndex, true);
+    });
+  });
+
+  renderPlan(0);
+}
+
+initPlanShowcase();
 
 const branchContent = {
   personalizados: {

@@ -971,40 +971,227 @@ html.has-convergence-preview .convergence-preview {
   margin-bottom: 0;
 }
 
-.plans {
+.plan-showcase {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   padding: 110px 0;
+  background: var(--green-900);
+  color: var(--white);
 }
 
-.plan-index {
-  margin: 0;
+.reactive-lines-canvas {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0.66;
+  pointer-events: none;
+}
+
+.plan-showcase-inner {
+  position: relative;
+  z-index: 2;
+}
+
+.plan-showcase-heading {
+  max-width: 850px;
+}
+
+.plan-showcase-heading .eyebrow {
+  color: var(--gold-200);
+}
+
+.plan-showcase-heading h2 {
+  color: var(--white);
+}
+
+.plan-showcase-heading > p:last-child {
+  color: #dce8e3;
+}
+
+.plan-cover-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 18px;
+  margin: 48px 0 0;
   padding: 0;
-  border-top: 1px solid var(--line);
   list-style: none;
 }
 
-.plan-index li {
-  min-height: 72px;
+.plan-cover-list li {
+  min-width: 0;
+}
+
+.plan-cover {
+  position: relative;
+  width: 100%;
+  display: block;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgba(180, 135, 43, 0.56);
+  border-radius: 4px;
+  background: var(--ivory);
+  color: var(--green-950);
+  text-align: left;
+  box-shadow: 0 16px 34px rgba(4, 28, 23, 0.2);
+  cursor: pointer;
+  transition:
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 220ms ease,
+    box-shadow 260ms ease;
+}
+
+.plan-cover-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 0.707;
+  overflow: hidden;
+  background: var(--ivory);
+}
+
+.plan-cover-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  pointer-events: none;
+}
+
+.plan-cover-media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.plan-cover-label {
+  min-height: 68px;
   display: grid;
-  grid-template-columns: 90px minmax(230px, 0.8fr) 1.2fr;
-  gap: 22px;
-  align-items: center;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  padding: 12px 11px 13px;
+  border-top: 1px solid rgba(180, 135, 43, 0.34);
 }
 
-.plan-index span {
+.plan-cover-code {
+  padding-top: 2px;
   color: var(--gold-700);
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
 }
 
-.plan-index strong {
+.plan-cover strong {
   color: var(--green-900);
+  font-size: 13px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
-.plan-index small {
-  color: var(--muted);
+.plan-cover:hover,
+.plan-cover:focus-visible {
+  border-color: var(--gold-200);
+  box-shadow:
+    0 20px 42px rgba(4, 28, 23, 0.28),
+    0 0 0 2px rgba(180, 135, 43, 0.3);
+  transform: translateY(-5px);
+}
+
+.plan-cover:hover .plan-cover-media img,
+.plan-cover:focus-visible .plan-cover-media img,
+.plan-cover.is-active .plan-cover-media img {
+  transform: scale(1.018);
+}
+
+.plan-cover:focus-visible {
+  outline: 3px solid var(--gold-200);
+  outline-offset: 3px;
+}
+
+.plan-cover.is-active {
+  border: 3px solid var(--gold-500);
+  box-shadow:
+    0 22px 46px rgba(4, 28, 23, 0.34),
+    0 0 26px rgba(180, 135, 43, 0.2);
+  transform: translateY(-7px);
+}
+
+.plan-detail {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.65fr) minmax(0, 1.35fr);
+  gap: 34px 58px;
+  align-items: start;
+  margin-top: 56px;
+  padding: 34px 0;
+  border-top: 1px solid rgba(180, 135, 43, 0.7);
+  border-bottom: 1px solid rgba(180, 135, 43, 0.34);
+}
+
+.plan-detail-code {
+  margin: 0 0 8px;
+  color: var(--gold-200);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.plan-detail-heading h3 {
+  margin: 0;
+  color: var(--white);
+  font-size: 32px;
+  line-height: 1.08;
+}
+
+.plan-detail-branch {
+  margin: 18px 0 0;
+  color: #dce8e3;
+  font-size: 14px;
+}
+
+.plan-detail-branch strong {
+  color: var(--gold-200);
+}
+
+.plan-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
+
+.plan-detail-grid > div {
+  min-width: 0;
+  padding: 0 22px;
+  border-left: 1px solid rgba(180, 135, 43, 0.34);
+}
+
+.plan-detail-grid > div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.plan-detail-grid span {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--gold-200);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.plan-detail-grid p {
+  margin: 0;
+  color: #edf3f0;
   font-size: 15px;
+  line-height: 1.55;
+}
+
+.plan-detail-cta {
+  grid-column: 2;
+  justify-self: start;
 }
 
 .pricing {
@@ -1451,7 +1638,7 @@ html.has-convergence-preview .convergence-preview {
   .responsibility,
   .pricing,
   .deliverables,
-  .plans,
+  .plan-showcase,
   .faq {
     padding: 72px 0;
   }
@@ -1563,15 +1750,62 @@ html.has-convergence-preview .convergence-preview {
     padding: 22px 20px;
   }
 
-  .plan-index li {
-    grid-template-columns: 70px 1fr;
-    gap: 5px 10px;
-    align-items: start;
-    padding: 18px 0;
+  .plan-cover-list {
+    grid-auto-flow: column;
+    grid-auto-columns: 184px;
+    grid-template-columns: none;
+    gap: 12px;
+    overflow-x: auto;
+    margin-right: -14px;
+    margin-left: -14px;
+    padding: 8px 14px 18px;
+    scroll-padding-inline: 14px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
   }
 
-  .plan-index small {
-    grid-column: 2;
+  .plan-cover-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .plan-cover-list li {
+    scroll-snap-align: start;
+  }
+
+  .plan-cover-label {
+    min-height: 64px;
+    padding: 11px 10px 12px;
+  }
+
+  .plan-detail {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-top: 38px;
+  }
+
+  .plan-detail-heading h3 {
+    font-size: 28px;
+  }
+
+  .plan-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .plan-detail-grid > div,
+  .plan-detail-grid > div:first-child {
+    padding: 18px 0;
+    border-top: 1px solid rgba(180, 135, 43, 0.3);
+    border-left: 0;
+  }
+
+  .plan-detail-grid > div:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .plan-detail-cta {
+    grid-column: 1;
+    width: 100%;
   }
 
   .pricing-layout {
