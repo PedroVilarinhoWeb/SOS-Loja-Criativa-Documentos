@@ -22,7 +22,7 @@
       "category": "direcao",
       "weight": 10,
       "questions": [
-        {"id": "q01", "dimension": "clareza", "text": "Consigo descrever, sem responder “toda a gente”, quem costuma comprar e quem vai usar ou receber aquilo que vendo."},
+        {"id": "q01", "dimension": "clareza", "text": "Se pensar nas minhas últimas vendas, sei quem fez a encomenda e para quem era o produto."},
         {"id": "q02", "dimension": "aplicacao", "text": "Consigo indicar pelo menos duas situações concretas que levam essa pessoa a procurar os meus produtos."},
         {"id": "q03", "dimension": "prova", "text": "Nos últimos 90 dias, usei perguntas, pedidos, recusas, encomendas ou feedback real para ajustar aquilo que mostro ou vendo."}
       ]
