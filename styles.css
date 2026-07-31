@@ -465,7 +465,7 @@ html.has-convergence-preview .convergence-preview {
 .convergence-preview::after {
   content: "";
   position: absolute;
-  z-index: 4;
+  z-index: 5;
   right: 0;
   bottom: 0;
   left: 0;
@@ -488,7 +488,7 @@ html.has-convergence-preview .convergence-preview {
 
 .convergence-inner {
   position: relative;
-  z-index: 3;
+  z-index: 4;
   min-height: 520px;
   display: flex;
   align-items: center;
@@ -1106,10 +1106,13 @@ html.has-convergence-preview .convergence-preview {
   pointer-events: none;
   opacity: 0.74;
   mix-blend-mode: screen;
+  transform: rotate(180deg);
+  transform-origin: center;
 }
 
 .convergence-preview > .rising-lines-canvas {
-  opacity: 0.48;
+  z-index: 3;
+  opacity: 0.42;
 }
 
 .band-dark > .section-inner {
