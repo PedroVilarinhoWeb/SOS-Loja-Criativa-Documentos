@@ -1672,23 +1672,28 @@ html.has-convergence-preview .convergence-preview {
 :is(.button, .branch-tab, .mobile-cta) {
   --sos-button-angle: 0deg;
   --sos-button-surface: var(--green-900);
-  --sos-button-border: rgba(180, 135, 43, 0.58);
+  --sos-button-border: rgba(180, 135, 43, 0.3);
   --sos-button-highlight: rgba(255, 255, 255, 0.95);
+  --sos-button-accent: var(--gold-200);
+  --sos-button-aura: rgba(180, 135, 43, 0.46);
   isolation: isolate;
   overflow: hidden;
+  border-width: 2px;
   border-color: transparent;
   background:
     linear-gradient(var(--sos-button-surface), var(--sos-button-surface)) padding-box,
     conic-gradient(
         from var(--sos-button-angle),
         var(--sos-button-border) 0deg,
-        var(--sos-button-border) 270deg,
-        var(--sos-button-highlight) 318deg,
-        var(--gold-500) 342deg,
+        var(--sos-button-border) 205deg,
+        rgba(255, 255, 255, 0.34) 236deg,
+        var(--sos-button-accent) 270deg,
+        var(--sos-button-highlight) 306deg,
+        var(--sos-button-accent) 336deg,
         var(--sos-button-border) 360deg
       )
       border-box;
-  animation: sos-button-border-turn 4.8s linear infinite;
+  animation: sos-button-border-turn 3.6s linear infinite;
   transition:
     transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 380ms ease,
@@ -1731,10 +1736,13 @@ html.has-convergence-preview .convergence-preview {
 .mobile-cta:hover,
 .mobile-cta:focus-visible {
   transform: translateY(-2px) scale(1.035);
+  box-shadow:
+    0 10px 24px rgba(11, 49, 41, 0.18),
+    0 0 20px var(--sos-button-aura);
 }
 
 :is(.button, .branch-tab, .mobile-cta):is(:hover, :focus-visible)::after {
-  opacity: 0.2;
+  opacity: 0.28;
 }
 
 :is(.button, .branch-tab, .mobile-cta):active {
@@ -1751,13 +1759,15 @@ html.has-convergence-preview .convergence-preview {
   --sos-button-surface: var(--green-800);
   box-shadow:
     0 14px 28px rgba(11, 49, 41, 0.2),
-    0 0 22px rgba(180, 135, 43, 0.2);
+    0 0 22px var(--sos-button-aura);
 }
 
 .button-gold {
   --sos-button-surface: var(--gold-500);
   --sos-button-border: rgba(23, 61, 52, 0.56);
   --sos-button-highlight: rgba(255, 255, 255, 0.92);
+  --sos-button-accent: var(--green-700);
+  --sos-button-aura: rgba(23, 61, 52, 0.32);
 }
 
 .button-gold:hover,
@@ -1769,11 +1779,14 @@ html.has-convergence-preview .convergence-preview {
   --sos-button-surface: var(--white);
   --sos-button-border: var(--line);
   --sos-button-highlight: rgba(180, 135, 43, 0.88);
+  --sos-button-aura: rgba(180, 135, 43, 0.3);
 }
 
 .branch-tab.is-active {
   --sos-button-surface: var(--green-900);
-  --sos-button-border: rgba(180, 135, 43, 0.65);
+  --sos-button-border: rgba(180, 135, 43, 0.34);
+  --sos-button-accent: var(--gold-200);
+  --sos-button-highlight: rgba(255, 255, 255, 0.96);
 }
 
 .mobile-cta {
