@@ -240,6 +240,10 @@ function sosScrollTo(identifier) {
   if (!target) return;
   try { target.scrollIntoView({ behavior: "smooth", block: "start" }); }
   catch (_) { target.scrollIntoView(); }
+  const focusTarget = target.querySelector('input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled])');
+  if (!focusTarget) return;
+  try { focusTarget.focus({ preventScroll: true }); }
+  catch (_) { focusTarget.focus(); }
 }
 
 function sosRenderScores(container, scores) {
@@ -336,12 +340,14 @@ function sosInitialise() {
   const resultButton = document.getElementById("show-result");
   const resetButton = document.getElementById("reset-form");
   const progressFill = document.getElementById("progress-fill");
+  const progressTrack = document.getElementById("progress-track");
   const progressCopy = document.getElementById("progress-copy");
   const ready = document.getElementById("result-ready");
   const savedNote = document.getElementById("saved-note");
   const shareNote = document.getElementById("share-note");
   const manualShareText = document.getElementById("manual-share-text");
   const manualReportLink = document.getElementById("manual-report-link");
+  const difficultyFeedback = document.getElementById("difficulty-feedback");
   const parameters = new URLSearchParams(window.location.search);
   const reportParameter = parameters.get("resultado");
   const legacyReport = parameters.has("relatorio");
@@ -364,6 +370,7 @@ function sosInitialise() {
   sosRestoreForm(form, initialState);
 
   const showNotice = (message, isError) => {
+    ready.setAttribute("role", isError ? "alert" : "status");
     ready.textContent = message;
     ready.classList.toggle("error", Boolean(isError));
     ready.hidden = false;
@@ -377,7 +384,10 @@ function sosInitialise() {
     const saved = sosSaveState(state);
     progressFill.style.width = `${Math.round(answered / 30 * 100)}%`;
     progressCopy.textContent = `${answered} de 30 respostas`;
-    savedNote.textContent = saved ? "As respostas ficam guardadas neste dispositivo." : "O navegador não permitiu guardar as respostas, mas o cálculo continua a funcionar.";
+    progressTrack.setAttribute("aria-valuenow", String(answered));
+    progressTrack.setAttribute("aria-valuetext", `${answered} de 30 respostas`);
+    const savedMessage = saved ? "As respostas ficam guardadas neste dispositivo." : "O navegador não permitiu guardar as respostas, mas o cálculo continua a funcionar.";
+    if (savedNote.textContent !== savedMessage) savedNote.textContent = savedMessage;
 
     if (validation.complete) {
       currentResult = sosWebCalculate(state);
@@ -387,6 +397,8 @@ function sosInitialise() {
       if (showResult) {
         try { results.scrollIntoView({ behavior: "smooth", block: "start" }); }
         catch (_) { results.scrollIntoView(); }
+        try { results.focus({ preventScroll: true }); }
+        catch (_) { results.focus(); }
       }
     } else {
       currentResult = null;
@@ -408,7 +420,9 @@ function sosInitialise() {
       const checked = form.querySelectorAll('[name="difficulty"]:checked');
       if (checked.length > 2) {
         event.target.checked = false;
-        window.alert("Escolhe no máximo duas dificuldades.");
+        difficultyFeedback.textContent = "Já escolheste duas dificuldades. Retira uma antes de escolher outra.";
+      } else {
+        difficultyFeedback.textContent = "";
       }
     }
     refresh(false);
