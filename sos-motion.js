@@ -1,9 +1,14 @@
 (() => {
   const parameters = new URLSearchParams(window.location.search);
   const staticMode = parameters.has("static") || parameters.has("reduce-motion");
-  const canAnimate = () => !staticMode;
+  let motionPaused = document.documentElement.classList.contains("motion-paused");
+  const canAnimate = () => !staticMode && !motionPaused;
 
   document.documentElement.classList.toggle("motion-enabled", canAnimate());
+  window.addEventListener("sos:motion-change", (event) => {
+    motionPaused = Boolean(event.detail?.paused);
+    document.documentElement.classList.toggle("motion-enabled", canAnimate());
+  });
 
   const clamp = (value, minimum, maximum) =>
     Math.max(minimum, Math.min(maximum, value));
@@ -44,6 +49,7 @@
       scale: 1,
       drops: [],
       frame: 0,
+      frameCount: 0,
       lastTime: 0,
       visible: false,
       trailStroke: null,
@@ -147,6 +153,8 @@
 
     const tick = (time) => {
       state.frame = 0;
+      state.frameCount += 1;
+      canvas.dataset.frame = String(state.frameCount);
       if (!state.visible || document.hidden || !canAnimate()) {
         drawRain(0, time);
         return;
@@ -161,10 +169,14 @@
 
     const start = () => {
       if (!state.frame && state.visible && !document.hidden && canAnimate()) {
+        canvas.dataset.motion = "running";
         state.frame = requestAnimationFrame(tick);
       } else if (!canAnimate()) {
+        canvas.dataset.motion = "paused";
         stop();
         drawRain(0, 0);
+      } else {
+        canvas.dataset.motion = "stopped";
       }
     };
 
@@ -173,7 +185,10 @@
       ([entry]) => {
         state.visible = entry.isIntersecting;
         if (state.visible) start();
-        else stop();
+        else {
+          canvas.dataset.motion = "stopped";
+          stop();
+        }
       },
       { threshold: 0.02 },
     ).observe(host);
@@ -181,6 +196,7 @@
       if (document.hidden) stop();
       else start();
     });
+    window.addEventListener("sos:motion-change", start);
     rebuild();
   }
 
@@ -198,6 +214,7 @@
       height: 1,
       scale: 1,
       frame: 0,
+      frameCount: 0,
       visible: false,
       pointerX: 0.5,
       pointerY: 0.46,
@@ -274,6 +291,8 @@
 
     const tick = (time) => {
       state.frame = 0;
+      state.frameCount += 1;
+      canvas.dataset.frame = String(state.frameCount);
       if (state.mobile && state.lastDraw && time - state.lastDraw < 32) {
         state.frame = requestAnimationFrame(tick);
         return;
@@ -288,8 +307,10 @@
     const start = () => {
       stop();
       if (state.visible && !document.hidden && canAnimate()) {
+        canvas.dataset.motion = "running";
         state.frame = requestAnimationFrame(tick);
       } else {
+        canvas.dataset.motion = canAnimate() ? "stopped" : "paused";
         drawFlow(0);
       }
     };
@@ -307,11 +328,15 @@
       ([entry]) => {
         state.visible = entry.isIntersecting;
         if (state.visible) start();
-        else stop();
+        else {
+          canvas.dataset.motion = "stopped";
+          stop();
+        }
       },
       { threshold: 0.02 },
     ).observe(section);
     document.addEventListener("visibilitychange", start);
+    window.addEventListener("sos:motion-change", start);
     resize();
   }
 
@@ -342,6 +367,7 @@
       scale: 1,
       points: [],
       frame: 0,
+      frameCount: 0,
       elapsed: 0,
       lastFrameTime: 0,
       visible: true,
@@ -367,6 +393,8 @@
 
     const drawLogo = (time) => {
       state.frame = 0;
+      state.frameCount += 1;
+      container.dataset.frame = String(state.frameCount);
       if (!state.built || document.hidden) return;
       if (!state.visible) {
         state.replayRequested = true;
@@ -386,9 +414,11 @@
       container.classList.add("logo-reveal-active");
 
       if (progress < 1) {
+        container.dataset.motion = "running";
         state.frame = requestAnimationFrame(drawLogo);
       } else {
         state.settled = true;
+        container.dataset.motion = "settled";
         container.classList.add("logo-reveal-settled");
       }
     };
@@ -398,6 +428,7 @@
       state.frame = 0;
       state.lastFrameTime = 0;
       state.settled = true;
+      container.dataset.motion = "settled";
       container.classList.remove("logo-reveal-active");
       container.classList.add("logo-reveal-settled");
     };
@@ -410,6 +441,7 @@
       }
       if (state.frame) cancelAnimationFrame(state.frame);
       state.settled = false;
+      container.dataset.motion = "running";
       state.elapsed = 0;
       state.lastFrameTime = 0;
       container.classList.remove("logo-reveal-settled");
@@ -559,6 +591,20 @@
         else settle();
       }
     });
+    window.addEventListener("sos:motion-change", () => {
+      hideLens();
+      if (!canAnimate()) {
+        container.dataset.motion = "paused";
+        if (state.frame) cancelAnimationFrame(state.frame);
+        state.frame = 0;
+        state.lastFrameTime = 0;
+      } else if (state.visible && state.built && !state.settled && !state.frame) {
+        container.dataset.motion = "running";
+        state.frame = requestAnimationFrame(drawLogo);
+      } else if (state.settled) {
+        container.dataset.motion = "settled";
+      }
+    });
     image.addEventListener("load", build, { once: true });
     image.addEventListener("error", settle, { once: true });
     image.src = source;
@@ -585,6 +631,7 @@
     let visible = true;
     let changing = false;
     let activeAnimation = null;
+    let changeCount = 0;
 
     const fitBadge = () => {
       const style = getComputedStyle(badge);
@@ -595,7 +642,11 @@
 
     const schedule = () => {
       window.clearTimeout(timer);
-      if (!canAnimate() || !visible || document.hidden) return;
+      if (!canAnimate() || !visible || document.hidden) {
+        carousel.dataset.motion = canAnimate() ? "stopped" : "paused";
+        return;
+      }
+      carousel.dataset.motion = "running";
       timer = window.setTimeout(changeTitle, 2700);
     };
 
@@ -639,6 +690,8 @@
 
       const previousWidth = badge.getBoundingClientRect().width;
       index = (index + 1) % titles.length;
+      changeCount += 1;
+      carousel.dataset.frame = String(changeCount);
       text.textContent = titles[index];
       badge.style.width = "auto";
       const nextWidth = badge.getBoundingClientRect().width;
@@ -673,6 +726,16 @@
     ).observe(carousel);
     window.addEventListener("resize", fitBadge, { passive: true });
     document.addEventListener("visibilitychange", schedule);
+    window.addEventListener("sos:motion-change", () => {
+      window.clearTimeout(timer);
+      activeAnimation?.cancel();
+      activeAnimation = null;
+      changing = false;
+      text.style.opacity = "1";
+      text.style.transform = "translateY(0)";
+      fitBadge();
+      schedule();
+    });
   }
 
   window.sosPlanTitles = Array.from(

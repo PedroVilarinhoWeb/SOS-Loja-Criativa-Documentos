@@ -19,12 +19,12 @@
   <meta name="twitter:image" content="https://pedrovilarinhoweb.github.io/SOS-Loja-Criativa-Documentos/assets/og.png">
   <title>SOS Loja Criativa | Descobre o que a tua loja precisa primeiro</title>
   <link rel="icon" type="image/png" href="assets/logo-icon.png">
-  <link rel="stylesheet" href="styles.css?v=20260804-own-motion-1">
-  <script src="app.js?v=20260804-own-motion-1" defer></script>
-  <script src="sos-motion.js?v=20260804-own-motion-1" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260804-accessibility-2">
+  <script src="app.js?v=20260804-accessibility-2" defer></script>
+  <script src="sos-motion.js?v=20260804-accessibility-2" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#conteudo">Saltar para o conteúdo</a>
+  <a class="skip-link" href="#conteudo" data-focus-target>Saltar para o conteúdo</a>
 
   <header class="site-header" data-header>
     <a class="brand" href="#inicio" aria-label="SOS Loja Criativa, início">
@@ -35,11 +35,16 @@
       <a href="#o-que-recebes">O que recebes</a>
       <a href="#preco">Preço</a>
     </nav>
-    <a class="button button-small" href="diagnostico/index.html"><span class="button-effect-label">Fazer o diagnóstico</span></a>
+    <div class="header-actions">
+      <button class="motion-control" type="button" data-motion-control aria-pressed="false" aria-label="Pausar animações" title="Pausar animações">
+        <span class="motion-control-icon" aria-hidden="true"></span>
+      </button>
+      <a class="button button-small" href="diagnostico/index.html"><span class="button-effect-label">Fazer o diagnóstico</span></a>
+    </div>
   </header>
 
-  <main id="conteudo">
-    <section class="hero" id="inicio">
+  <main id="conteudo" tabindex="-1">
+    <section class="hero" id="inicio" tabindex="-1">
       <div class="hero-logo-stage" aria-hidden="true">
         <div class="hero-logo" data-sos-logo data-logo-src="assets/logo-vertical.svg">
           <img class="hero-logo-fallback" src="assets/logo-vertical.svg" alt="" width="1600" height="1381">
@@ -171,16 +176,16 @@
         </div>
 
         <div class="branch-tabs" role="tablist" aria-label="Escolher ramo">
-          <button class="branch-tab is-active" type="button" role="tab" aria-selected="true" data-branch="personalizados"><span class="button-effect-label">Personalizados</span></button>
-          <button class="branch-tab" type="button" role="tab" aria-selected="false" data-branch="artesanato"><span class="button-effect-label">Artesanato</span></button>
-          <button class="branch-tab" type="button" role="tab" aria-selected="false" data-branch="moda"><span class="button-effect-label">Moda</span></button>
-          <button class="branch-tab" type="button" role="tab" aria-selected="false" data-branch="papelaria"><span class="button-effect-label">Papelaria</span></button>
-          <button class="branch-tab" type="button" role="tab" aria-selected="false" data-branch="eventos"><span class="button-effect-label">Eventos</span></button>
-          <button class="branch-tab" type="button" role="tab" aria-selected="false" data-branch="pastelaria"><span class="button-effect-label">Pastelaria</span></button>
-          <button class="branch-tab" type="button" role="tab" aria-selected="false" data-branch="materiais"><span class="button-effect-label">Materiais</span></button>
+          <button class="branch-tab is-active" id="branch-tab-personalizados" type="button" role="tab" aria-selected="true" aria-controls="branch-panel" tabindex="0" data-branch="personalizados"><span class="button-effect-label">Personalizados</span></button>
+          <button class="branch-tab" id="branch-tab-artesanato" type="button" role="tab" aria-selected="false" aria-controls="branch-panel" tabindex="-1" data-branch="artesanato"><span class="button-effect-label">Artesanato</span></button>
+          <button class="branch-tab" id="branch-tab-moda" type="button" role="tab" aria-selected="false" aria-controls="branch-panel" tabindex="-1" data-branch="moda"><span class="button-effect-label">Moda</span></button>
+          <button class="branch-tab" id="branch-tab-papelaria" type="button" role="tab" aria-selected="false" aria-controls="branch-panel" tabindex="-1" data-branch="papelaria"><span class="button-effect-label">Papelaria</span></button>
+          <button class="branch-tab" id="branch-tab-eventos" type="button" role="tab" aria-selected="false" aria-controls="branch-panel" tabindex="-1" data-branch="eventos"><span class="button-effect-label">Eventos</span></button>
+          <button class="branch-tab" id="branch-tab-pastelaria" type="button" role="tab" aria-selected="false" aria-controls="branch-panel" tabindex="-1" data-branch="pastelaria"><span class="button-effect-label">Pastelaria</span></button>
+          <button class="branch-tab" id="branch-tab-materiais" type="button" role="tab" aria-selected="false" aria-controls="branch-panel" tabindex="-1" data-branch="materiais"><span class="button-effect-label">Materiais</span></button>
         </div>
 
-        <div class="branch-stage" aria-live="polite">
+        <div class="branch-stage" id="branch-panel" role="tabpanel" aria-labelledby="branch-tab-personalizados" aria-live="polite" tabindex="0">
           <div class="branch-image-wrap">
             <img id="branch-image" src="assets/editorial/personalizados.webp" alt="Sacola e caneca personalizadas com o logótipo SOS Loja Criativa numa bancada de trabalho" width="1440" height="960" loading="lazy">
           </div>
@@ -203,7 +208,7 @@
         </div>
 
         <div class="preview-layout">
-          <div class="preview-stack" aria-label="Páginas reais do Plano SOS-01 Artesanato">
+          <div class="preview-stack" role="region" aria-label="Páginas reais do Plano SOS-01 Artesanato" tabindex="0">
             <figure class="preview-page preview-back">
               <div class="preview-sheet">
                 <img src="assets/previews/sos01-page07.png" alt="Página real com explicação e exemplo do Plano SOS-01 Artesanato" loading="lazy">
@@ -400,7 +405,7 @@
     </div>
     <div class="footer-meta">
       <p>© <span data-year></span> SOS Loja Criativa. Conteúdo para utilização pessoal da compradora.</p>
-      <a class="button button-small back-to-top" href="#inicio"><span class="button-effect-label">Voltar ao início ↑</span></a>
+      <a class="button button-small back-to-top" href="#inicio" data-focus-target><span class="button-effect-label">Voltar ao início ↑</span></a>
     </div>
   </footer>
 
