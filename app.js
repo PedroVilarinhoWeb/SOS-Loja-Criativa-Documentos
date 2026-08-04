@@ -61,6 +61,11 @@ const planModules = [
   },
 ];
 
+const pageMotionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+const forcePageMotion = new URLSearchParams(window.location.search).has("force-motion");
+const scrollBehavior = () =>
+  pageMotionPreference.matches && !forcePageMotion ? "auto" : "smooth";
+
 const backToTopButton = document.querySelector(".back-to-top");
 backToTopButton?.addEventListener("click", () => {
   window.dispatchEvent(new Event("sos:replay-logo"));
@@ -119,7 +124,11 @@ function initPlanShowcase() {
     });
 
     if (keepCoverVisible) {
-      selectedCover.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      selectedCover.scrollIntoView({
+        behavior: scrollBehavior(),
+        block: "nearest",
+        inline: "center",
+      });
     }
   };
 
@@ -260,7 +269,7 @@ document.querySelectorAll("a[href^='#']").forEach((link) => {
     const target = document.querySelector(link.getAttribute("href"));
     if (!target) return;
     event.preventDefault();
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    target.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
   });
 });
 

@@ -48,6 +48,7 @@
       frame: 0,
       lastTime: 0,
       visible: false,
+      trailStroke: null,
     };
 
     const resetDrop = (drop, spreadVertically) => {
@@ -69,25 +70,30 @@
       const bounds = host.getBoundingClientRect();
       state.width = Math.max(1, Math.round(bounds.width));
       state.height = Math.max(1, Math.round(bounds.height));
+      const mobile = state.width <= 760;
       state.scale = resizeCanvas(
         canvas,
         context,
         state.width,
         state.height,
-        1.6,
+        mobile ? 1 : 1.35,
       );
 
-      const density = state.width <= 760 ? 2600 : 1850;
+      const density = mobile ? 3200 : 2150;
       const count = clamp(
         Math.round((state.width * state.height) / density),
-        state.width <= 760 ? 70 : 130,
-        state.width <= 760 ? 240 : 520,
+        mobile ? 60 : 110,
+        mobile ? 180 : 420,
       );
       state.drops = Array.from({ length: count }, () => {
         const drop = {};
         resetDrop(drop, true);
         return drop;
       });
+      state.trailStroke = context.createLinearGradient(0, 0, 0, state.height);
+      state.trailStroke.addColorStop(0, "rgba(180,135,43,0.72)");
+      state.trailStroke.addColorStop(0.5, "rgba(255,241,202,0.96)");
+      state.trailStroke.addColorStop(1, "rgba(180,135,43,0.72)");
       drawRain(0, 0);
     };
 
@@ -112,16 +118,8 @@
         const alpha = drop.alpha * edgeFade;
         if (alpha < 0.01) continue;
 
-        const trail = context.createLinearGradient(
-          headX,
-          drop.y - drop.length,
-          headX,
-          drop.y,
-        );
-        trail.addColorStop(0, "rgba(180,135,43,0)");
-        trail.addColorStop(0.72, `rgba(226,184,88,${alpha * 0.72})`);
-        trail.addColorStop(1, `rgba(255,241,202,${alpha})`);
-        context.strokeStyle = trail;
+        context.globalAlpha = alpha;
+        context.strokeStyle = state.trailStroke;
         context.lineWidth = drop.lineWidth;
         context.beginPath();
         context.moveTo(headX - Math.sin(drop.phase) * 1.8, drop.y - drop.length);
@@ -139,6 +137,7 @@
         }
       }
 
+      context.globalAlpha = 1;
       context.globalCompositeOperation = "source-over";
     };
 
@@ -207,18 +206,21 @@
       pointerY: 0.46,
       targetX: 0.5,
       targetY: 0.46,
+      mobile: false,
+      lastDraw: 0,
     };
 
     const resize = () => {
       const bounds = section.getBoundingClientRect();
       state.width = Math.max(1, Math.round(bounds.width));
       state.height = Math.max(1, Math.round(bounds.height));
+      state.mobile = state.width < 600;
       state.scale = resizeCanvas(
         canvas,
         context,
         state.width,
         state.height,
-        1.65,
+        state.mobile ? 1 : 1.4,
       );
       drawFlow(0);
     };
@@ -231,8 +233,8 @@
       state.pointerX += (state.targetX - state.pointerX) * 0.055;
       state.pointerY += (state.targetY - state.pointerY) * 0.055;
 
-      const mobile = width < 600;
-      const lineCount = mobile ? 23 : 36;
+      const mobile = state.mobile;
+      const lineCount = mobile ? 20 : 34;
       const pointerX = state.pointerX * width;
       const pointerY = state.pointerY * height;
       const reach = Math.max(130, height * 0.28);
@@ -270,10 +272,16 @@
     const stop = () => {
       if (state.frame) cancelAnimationFrame(state.frame);
       state.frame = 0;
+      state.lastDraw = 0;
     };
 
     const tick = (time) => {
       state.frame = 0;
+      if (state.mobile && state.lastDraw && time - state.lastDraw < 32) {
+        state.frame = requestAnimationFrame(tick);
+        return;
+      }
+      state.lastDraw = time;
       drawFlow(time);
       if (state.visible && !document.hidden && canAnimate()) {
         state.frame = requestAnimationFrame(tick);
@@ -338,7 +346,8 @@
       scale: 1,
       points: [],
       frame: 0,
-      startTime: 0,
+      elapsed: 0,
+      lastFrameTime: 0,
       visible: true,
       built: false,
       settled: false,
@@ -369,7 +378,11 @@
       }
       state.replayRequested = false;
 
-      const progress = clamp((time - state.startTime) / duration, 0, 1);
+      if (state.lastFrameTime) {
+        state.elapsed += clamp(time - state.lastFrameTime, 0, 50);
+      }
+      state.lastFrameTime = time;
+      const progress = clamp(state.elapsed / duration, 0, 1);
       context.setTransform(state.scale, 0, 0, state.scale, 0, 0);
       context.clearRect(0, 0, state.width, state.height);
       for (const point of state.points) drawPoint(point, progress);
@@ -387,6 +400,7 @@
     const settle = () => {
       if (state.frame) cancelAnimationFrame(state.frame);
       state.frame = 0;
+      state.lastFrameTime = 0;
       state.settled = true;
       container.classList.remove("logo-reveal-active");
       container.classList.add("logo-reveal-settled");
@@ -400,7 +414,8 @@
       }
       if (state.frame) cancelAnimationFrame(state.frame);
       state.settled = false;
-      state.startTime = performance.now();
+      state.elapsed = 0;
+      state.lastFrameTime = 0;
       container.classList.remove("logo-reveal-settled");
       container.classList.add("logo-reveal-active");
       state.frame = requestAnimationFrame(drawLogo);
@@ -526,6 +541,7 @@
         if (!state.visible && state.frame) {
           cancelAnimationFrame(state.frame);
           state.frame = 0;
+          state.lastFrameTime = 0;
         } else if (state.visible && state.replayRequested) {
           play();
         } else if (state.visible && state.built && !state.settled && !state.frame) {
@@ -539,6 +555,7 @@
       if (document.hidden && state.frame) {
         cancelAnimationFrame(state.frame);
         state.frame = 0;
+        state.lastFrameTime = 0;
       } else if (!document.hidden && state.visible && state.replayRequested) {
         play();
       } else if (!document.hidden && state.visible && state.built && !state.settled) {
@@ -576,6 +593,7 @@
     let timer = 0;
     let visible = true;
     let changing = false;
+    let activeAnimation = null;
 
     const fitBadge = () => {
       const style = getComputedStyle(badge);
@@ -590,6 +608,22 @@
       timer = window.setTimeout(changeTitle, 2700);
     };
 
+    const animateText = async (frames, options) => {
+      if (typeof text.animate !== "function") return canAnimate();
+      const animation = text.animate(frames, options);
+      activeAnimation = animation;
+      try {
+        await animation.finished;
+        animation.commitStyles?.();
+      } catch {
+        // A preference de movimento pode cancelar a transição em curso.
+      } finally {
+        animation.cancel();
+        if (activeAnimation === animation) activeAnimation = null;
+      }
+      return canAnimate();
+    };
+
     const changeTitle = async () => {
       if (changing || !canAnimate() || !visible || document.hidden) {
         schedule();
@@ -597,14 +631,19 @@
       }
       changing = true;
 
-      if (typeof text.animate === "function") {
-        await text.animate(
-          [
-            { opacity: 1, transform: "translateY(0)" },
-            { opacity: 0, transform: "translateY(-9px)" },
-          ],
-          { duration: 180, easing: "ease-in", fill: "forwards" },
-        ).finished;
+      const continueAfterExit = await animateText(
+        [
+          { opacity: 1, transform: "translateY(0)" },
+          { opacity: 0, transform: "translateY(-9px)" },
+        ],
+        { duration: 180, easing: "ease-in", fill: "forwards" },
+      );
+      if (!continueAfterExit) {
+        changing = false;
+        text.style.opacity = "1";
+        text.style.transform = "translateY(0)";
+        fitBadge();
+        return;
       }
 
       const previousWidth = badge.getBoundingClientRect().width;
@@ -616,19 +655,17 @@
       void badge.offsetWidth;
       badge.style.width = `${nextWidth}px`;
 
-      if (typeof text.animate === "function") {
-        await text.animate(
-          [
-            { opacity: 0, transform: "translateY(9px)" },
-            { opacity: 1, transform: "translateY(0)" },
-          ],
-          {
-            duration: 340,
-            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-            fill: "forwards",
-          },
-        ).finished;
-      }
+      await animateText(
+        [
+          { opacity: 0, transform: "translateY(9px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        {
+          duration: 340,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          fill: "forwards",
+        },
+      );
 
       changing = false;
       schedule();
@@ -645,7 +682,16 @@
     ).observe(carousel);
     window.addEventListener("resize", fitBadge, { passive: true });
     document.addEventListener("visibilitychange", schedule);
-    reducedMotion.addEventListener?.("change", schedule);
+    reducedMotion.addEventListener?.("change", () => {
+      window.clearTimeout(timer);
+      activeAnimation?.cancel();
+      activeAnimation = null;
+      changing = false;
+      text.style.opacity = "1";
+      text.style.transform = "translateY(0)";
+      fitBadge();
+      schedule();
+    });
   }
 
   window.sosPlanTitles = Array.from(
