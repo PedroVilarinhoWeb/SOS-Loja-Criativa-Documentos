@@ -252,7 +252,7 @@ summary:focus-visible {
 }
 
 .hero-logo > .hero-logo-fallback,
-.hero-logo > .hero-logo-particles {
+.hero-logo > .hero-logo-reveal {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -267,7 +267,7 @@ summary:focus-visible {
   transition: opacity 420ms ease;
 }
 
-.hero-logo-particles {
+.hero-logo-reveal {
   -webkit-mask-image: radial-gradient(
     ellipse at center,
     #000 0%,
@@ -285,19 +285,19 @@ summary:focus-visible {
   transition: opacity 420ms ease;
 }
 
-.hero-logo.logo-particles-ready > .hero-logo-fallback {
+.hero-logo.logo-reveal-active > .hero-logo-fallback {
   opacity: 0;
 }
 
-.hero-logo.logo-particles-ready > .hero-logo-particles {
+.hero-logo.logo-reveal-active > .hero-logo-reveal {
   opacity: 1;
 }
 
-.hero-logo.logo-particles-settled > .hero-logo-fallback {
+.hero-logo.logo-reveal-settled > .hero-logo-fallback {
   opacity: 1;
 }
 
-.hero-logo.logo-particles-settled > .hero-logo-particles {
+.hero-logo.logo-reveal-settled > .hero-logo-reveal {
   opacity: 0;
 }
 
@@ -421,11 +421,6 @@ summary:focus-visible {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
-}
-
-.plan-carousel-char {
-  display: inline-block;
-  will-change: transform, opacity;
 }
 
 .hero-inner h1 {
@@ -980,7 +975,7 @@ html.has-convergence-preview .convergence-preview {
   color: var(--white);
 }
 
-.reactive-lines-canvas {
+.sos-flow-canvas {
   position: absolute;
   z-index: 0;
   inset: 0;
@@ -1374,7 +1369,7 @@ html.has-convergence-preview .convergence-preview {
   max-width: 780px;
 }
 
-.rising-lines-canvas {
+.sos-rain-canvas {
   position: absolute;
   z-index: 0;
   inset: 0;
@@ -1384,11 +1379,9 @@ html.has-convergence-preview .convergence-preview {
   pointer-events: none;
   opacity: 0.74;
   mix-blend-mode: screen;
-  transform: rotate(180deg);
-  transform-origin: center;
 }
 
-.convergence-preview > .rising-lines-canvas {
+.convergence-preview > .sos-rain-canvas {
   z-index: 3;
   opacity: 0.42;
 }
