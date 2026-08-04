@@ -153,27 +153,61 @@ function sosRestoreForm(form, state) {
   }
 }
 
-function sosEncodeState(state) {
-  const json = JSON.stringify(sosSanitiseState(state));
+function sosSanitiseReport(raw) {
+  if (!raw || typeof raw !== "object" || raw.version !== 1) return null;
+  const validBranches = SOS_DATA.branchLabels || {};
+  const validPriorities = new Set(SOS_DATA.modules.map((module) => module.id));
+  if (typeof raw.branch !== "string" || !Object.prototype.hasOwnProperty.call(validBranches, raw.branch)) return null;
+  if (!Number.isInteger(raw.total) || raw.total < 0 || raw.total > 100) return null;
+  if (typeof raw.priority !== "string" || !validPriorities.has(raw.priority)) return null;
+  return {
+    version: 1,
+    branch: raw.branch,
+    total: raw.total,
+    priority: raw.priority,
+  };
+}
+
+function sosPriorityId(result) {
+  const match = String(result && result.nextFile ? result.nextFile : "").match(/SOS-(\d{2})/i);
+  if (!match) return "";
+  const index = Number.parseInt(match[1], 10) - 1;
+  const module = SOS_DATA.modules[index];
+  return module ? module.id : "";
+}
+
+function sosReportPayload(state, result) {
+  return sosSanitiseReport({
+    version: 1,
+    branch: state && state.profile ? state.profile.branch : "",
+    total: result ? result.total : null,
+    priority: sosPriorityId(result),
+  });
+}
+
+function sosEncodeReport(report) {
+  const safe = sosSanitiseReport(report);
+  if (!safe) throw new Error("invalid-report");
+  const json = JSON.stringify(safe);
   return btoa(unescape(encodeURIComponent(json)))
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=+$/g, "");
 }
 
-function sosDecodeState(encoded) {
+function sosDecodeReport(encoded) {
   try {
     const normalised = String(encoded || "").replace(/-/g, "+").replace(/_/g, "/");
     const padded = normalised + "=".repeat((4 - normalised.length % 4) % 4);
-    return sosSanitiseState(JSON.parse(decodeURIComponent(escape(atob(padded)))));
+    return sosSanitiseReport(JSON.parse(decodeURIComponent(escape(atob(padded)))));
   } catch (_) {
-    return sosSanitiseState(null);
+    return null;
   }
 }
 
-function sosReportUrl(state) {
+function sosReportUrl(report) {
   const base = `${window.location.origin}${window.location.pathname}`;
-  return `${base}?relatorio=${encodeURIComponent(sosEncodeState(state))}`;
+  return `${base}?resultado=${encodeURIComponent(sosEncodeReport(report))}`;
 }
 
 function sosProgress(state) {
@@ -250,15 +284,27 @@ function sosRenderResult(result) {
   offerSecondary.parentElement.hidden = !result.offerSecondary;
 }
 
-function sosShareText(result) {
+function sosShareText(report) {
+  const safe = sosSanitiseReport(report);
+  if (!safe) return "";
+  const module = SOS_DATA.modules.find((item) => item.id === safe.priority);
   return [
     "SOS Diagnóstico 0-100",
-    `Resultado: ${result.total}/100 - ${result.totalBand}`,
-    `Prioridade: ${result.primary.title}`,
-    `Direção: ${result.finalRoute}`,
-    `Plano recomendado: ${result.nextFile}`,
-    `Forma de avançar: ${result.offerMode}`,
+    `Ramo: ${SOS_DATA.branchLabels[safe.branch]}`,
+    `Resultado: ${safe.total}/100`,
+    `Prioridade: ${module ? module.label : safe.priority}`,
   ].join("\n");
+}
+
+function sosRenderSharedReport(report) {
+  const safe = sosSanitiseReport(report);
+  if (!safe) return false;
+  const module = SOS_DATA.modules.find((item) => item.id === safe.priority);
+  document.getElementById("shared-report-branch").textContent = SOS_DATA.branchLabels[safe.branch];
+  document.getElementById("shared-report-score").textContent = `${safe.total}/100`;
+  document.getElementById("shared-report-priority").textContent = module ? module.label : safe.priority;
+  document.getElementById("shared-report").hidden = false;
+  return true;
 }
 
 async function sosCopyText(text) {
@@ -296,10 +342,24 @@ function sosInitialise() {
   const shareNote = document.getElementById("share-note");
   const manualShareText = document.getElementById("manual-share-text");
   const manualReportLink = document.getElementById("manual-report-link");
-  const reportParameter = new URLSearchParams(window.location.search).get("relatorio");
-  const initialState = reportParameter ? sosDecodeState(reportParameter) : sosLoadState();
+  const parameters = new URLSearchParams(window.location.search);
+  const reportParameter = parameters.get("resultado");
+  const legacyReport = parameters.has("relatorio");
+  const sharedReport = reportParameter ? sosDecodeReport(reportParameter) : null;
+  const initialState = sosLoadState();
   let currentResult = null;
   let currentState = initialState;
+
+  if (reportParameter) {
+    document.body.classList.add("summary-mode");
+    if (!sosRenderSharedReport(sharedReport)) {
+      document.getElementById("shared-report-title").textContent = "Esta ligação de resultado não é válida";
+      document.getElementById("shared-report-description").textContent = "O resumo está incompleto ou foi alterado. Faz um novo diagnóstico para obteres um resultado válido.";
+      document.getElementById("shared-report-details").hidden = true;
+      document.getElementById("shared-report").hidden = false;
+    }
+    return;
+  }
 
   sosRestoreForm(form, initialState);
 
@@ -374,17 +434,21 @@ function sosInitialise() {
   document.getElementById("print-result").addEventListener("click", () => window.print());
   document.getElementById("open-report").addEventListener("click", () => {
     if (!currentResult) return;
-    const url = sosReportUrl(currentState);
+    const report = sosReportPayload(currentState, currentResult);
+    if (!report) return;
+    const url = sosReportUrl(report);
     const opened = window.open(url, "_blank", "noopener");
     if (!opened) {
       manualReportLink.href = url;
       manualReportLink.hidden = false;
-      shareNote.textContent = "O navegador bloqueou a nova página. Toca na ligação abaixo para abrir o relatório.";
+      shareNote.textContent = "O navegador bloqueou a nova página. Toca na ligação abaixo para abrir o resumo.";
     }
   });
   document.getElementById("copy-result").addEventListener("click", async () => {
     if (!currentResult) return;
-    const text = `${sosShareText(currentResult)}\nRelatório: ${sosReportUrl(currentState)}`;
+    const report = sosReportPayload(currentState, currentResult);
+    if (!report) return;
+    const text = `${sosShareText(report)}\nResumo: ${sosReportUrl(report)}`;
     manualShareText.hidden = true;
     try {
       await sosCopyText(text);
@@ -395,8 +459,10 @@ function sosInitialise() {
   });
   document.getElementById("share-result").addEventListener("click", async () => {
     if (!currentResult) return;
-    const text = sosShareText(currentResult);
-    const url = sosReportUrl(currentState);
+    const report = sosReportPayload(currentState, currentResult);
+    if (!report) return;
+    const text = sosShareText(report);
+    const url = sosReportUrl(report);
     manualShareText.hidden = true;
     try {
       if (!navigator.share) throw new Error("share-not-supported");
@@ -404,7 +470,7 @@ function sosInitialise() {
       shareNote.textContent = "Resultado partilhado.";
     } catch (error) {
       if (error && error.name === "AbortError") return;
-      showManualShare(`${text}\nRelatório: ${url}`, "A partilha automática não abriu. Usa “Copiar resumo” ou mantém premido no texto.");
+      showManualShare(`${text}\nResumo: ${url}`, "A partilha automática não abriu. Usa “Copiar resumo” ou mantém premido no texto.");
     }
   });
   window.addEventListener("beforeprint", () => {
@@ -412,14 +478,11 @@ function sosInitialise() {
     if (sosValidateState(state).complete) sosRenderResult(sosWebCalculate(state));
   });
   refresh(false);
-  if (reportParameter) {
-    const validation = sosValidateState(currentState);
-    if (validation.complete) {
-      document.body.classList.add("report-mode");
-      results.hidden = false;
-    } else {
-      showNotice("Esta ligação de relatório está incompleta. Preenche as respostas em falta.", true);
+  if (legacyReport) {
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, "", `${window.location.pathname}${window.location.hash || ""}`);
     }
+    showNotice("As ligações antigas deixaram de ser aceites porque continham respostas do diagnóstico. O teu progresso continua guardado apenas neste dispositivo.", true);
   }
 }
 
