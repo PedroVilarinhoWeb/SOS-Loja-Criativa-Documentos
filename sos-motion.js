@@ -1,11 +1,9 @@
 (() => {
   const parameters = new URLSearchParams(window.location.search);
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const staticMode = parameters.has("static");
-  const forceMotion = parameters.has("force-motion") && !staticMode;
-  const canAnimate = () => !staticMode && (!reducedMotion.matches || forceMotion);
+  const staticMode = parameters.has("static") || parameters.has("reduce-motion");
+  const canAnimate = () => !staticMode;
 
-  document.documentElement.classList.toggle("motion-enabled", forceMotion);
+  document.documentElement.classList.toggle("motion-enabled", canAnimate());
 
   const clamp = (value, minimum, maximum) =>
     Math.max(minimum, Math.min(maximum, value));
@@ -183,7 +181,6 @@
       if (document.hidden) stop();
       else start();
     });
-    reducedMotion.addEventListener?.("change", start);
     rebuild();
   }
 
@@ -315,7 +312,6 @@
       { threshold: 0.02 },
     ).observe(section);
     document.addEventListener("visibilitychange", start);
-    reducedMotion.addEventListener?.("change", start);
     resize();
   }
 
@@ -563,11 +559,6 @@
         else settle();
       }
     });
-    reducedMotion.addEventListener?.("change", () => {
-      if (canAnimate()) play();
-      else settle();
-    });
-
     image.addEventListener("load", build, { once: true });
     image.addEventListener("error", settle, { once: true });
     image.src = source;
@@ -682,16 +673,6 @@
     ).observe(carousel);
     window.addEventListener("resize", fitBadge, { passive: true });
     document.addEventListener("visibilitychange", schedule);
-    reducedMotion.addEventListener?.("change", () => {
-      window.clearTimeout(timer);
-      activeAnimation?.cancel();
-      activeAnimation = null;
-      changing = false;
-      text.style.opacity = "1";
-      text.style.transform = "translateY(0)";
-      fitBadge();
-      schedule();
-    });
   }
 
   window.sosPlanTitles = Array.from(
