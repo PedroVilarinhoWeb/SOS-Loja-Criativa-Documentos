@@ -64,47 +64,7 @@ const planModules = [
 const pageMotionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 const forcePageMotion = new URLSearchParams(window.location.search).has("force-motion");
 const scrollBehavior = () =>
-  document.documentElement.classList.contains("motion-paused") ||
-  (pageMotionPreference.matches && !forcePageMotion)
-    ? "auto"
-    : "smooth";
-
-const motionControl = document.querySelector("[data-motion-control]");
-const motionPreferenceKey = "sos-motion-paused";
-
-function readMotionPreference() {
-  try {
-    return window.localStorage.getItem(motionPreferenceKey) === "true";
-  } catch {
-    return false;
-  }
-}
-
-function storeMotionPreference(paused) {
-  try {
-    window.localStorage.setItem(motionPreferenceKey, String(paused));
-  } catch {
-    // O controlo continua funcional durante a sessão se a gravação estiver bloqueada.
-  }
-}
-
-function applyMotionPreference(paused, persist = false) {
-  document.documentElement.classList.toggle("motion-paused", paused);
-  if (motionControl instanceof HTMLButtonElement) {
-    const label = paused ? "Retomar animações" : "Pausar animações";
-    motionControl.setAttribute("aria-pressed", String(paused));
-    motionControl.setAttribute("aria-label", label);
-    motionControl.title = label;
-  }
-  if (persist) storeMotionPreference(paused);
-  window.dispatchEvent(new CustomEvent("sos:motion-change", { detail: { paused } }));
-}
-
-applyMotionPreference(readMotionPreference());
-motionControl?.addEventListener("click", () => {
-  const paused = !document.documentElement.classList.contains("motion-paused");
-  applyMotionPreference(paused, true);
-});
+  pageMotionPreference.matches && !forcePageMotion ? "auto" : "smooth";
 
 const backToTopButton = document.querySelector(".back-to-top");
 backToTopButton?.addEventListener("click", () => {
@@ -114,7 +74,7 @@ backToTopButton?.addEventListener("click", () => {
 function initConvergencePreview() {
   document.documentElement.classList.add("has-convergence-preview");
   const script = document.createElement("script");
-  script.src = "convergence.bundle.js?v=20260804-accessibility-2";
+  script.src = "convergence.bundle.js?v=20260805-no-motion-control-1";
   script.async = true;
   script.addEventListener("load", () => {
     if (window.SOSConvergence?.mountConvergencePreview) {

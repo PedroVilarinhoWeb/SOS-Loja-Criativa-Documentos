@@ -1,14 +1,9 @@
 (() => {
   const parameters = new URLSearchParams(window.location.search);
   const staticMode = parameters.has("static") || parameters.has("reduce-motion");
-  let motionPaused = document.documentElement.classList.contains("motion-paused");
-  const canAnimate = () => !staticMode && !motionPaused;
+  const canAnimate = () => !staticMode;
 
   document.documentElement.classList.toggle("motion-enabled", canAnimate());
-  window.addEventListener("sos:motion-change", (event) => {
-    motionPaused = Boolean(event.detail?.paused);
-    document.documentElement.classList.toggle("motion-enabled", canAnimate());
-  });
 
   const clamp = (value, minimum, maximum) =>
     Math.max(minimum, Math.min(maximum, value));
@@ -196,7 +191,6 @@
       if (document.hidden) stop();
       else start();
     });
-    window.addEventListener("sos:motion-change", start);
     rebuild();
   }
 
@@ -336,7 +330,6 @@
       { threshold: 0.02 },
     ).observe(section);
     document.addEventListener("visibilitychange", start);
-    window.addEventListener("sos:motion-change", start);
     resize();
   }
 
@@ -591,20 +584,6 @@
         else settle();
       }
     });
-    window.addEventListener("sos:motion-change", () => {
-      hideLens();
-      if (!canAnimate()) {
-        container.dataset.motion = "paused";
-        if (state.frame) cancelAnimationFrame(state.frame);
-        state.frame = 0;
-        state.lastFrameTime = 0;
-      } else if (state.visible && state.built && !state.settled && !state.frame) {
-        container.dataset.motion = "running";
-        state.frame = requestAnimationFrame(drawLogo);
-      } else if (state.settled) {
-        container.dataset.motion = "settled";
-      }
-    });
     image.addEventListener("load", build, { once: true });
     image.addEventListener("error", settle, { once: true });
     image.src = source;
@@ -726,16 +705,6 @@
     ).observe(carousel);
     window.addEventListener("resize", fitBadge, { passive: true });
     document.addEventListener("visibilitychange", schedule);
-    window.addEventListener("sos:motion-change", () => {
-      window.clearTimeout(timer);
-      activeAnimation?.cancel();
-      activeAnimation = null;
-      changing = false;
-      text.style.opacity = "1";
-      text.style.transform = "translateY(0)";
-      fitBadge();
-      schedule();
-    });
   }
 
   window.sosPlanTitles = Array.from(
