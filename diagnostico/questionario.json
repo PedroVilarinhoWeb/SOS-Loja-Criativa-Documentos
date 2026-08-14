@@ -18,11 +18,11 @@
   "modules": [
     {
       "id": "cliente_comprador",
-      "label": "Cliente comprador",
+      "label": "Cliente compradora",
       "category": "direcao",
       "weight": 10,
       "questions": [
-        {"id": "q01", "dimension": "clareza", "text": "Se pensar nas minhas últimas vendas, sei quem fez a encomenda e para quem era o produto."},
+        {"id": "q01", "dimension": "clareza", "text": "Nas minhas últimas vendas, consigo identificar quem fez a encomenda e para quem era o produto."},
         {"id": "q02", "dimension": "aplicacao", "text": "Consigo indicar pelo menos duas situações concretas que levam essa pessoa a procurar os meus produtos."},
         {"id": "q03", "dimension": "prova", "text": "Nos últimos 90 dias, usei perguntas, pedidos, recusas, encomendas ou feedback real para ajustar aquilo que mostro ou vendo."}
       ]
@@ -46,7 +46,7 @@
       "questions": [
         {"id": "q07", "dimension": "clareza", "text": "Tenho entre um e três produtos, coleções ou tipos de encomenda que quero vender com prioridade nos próximos 30 dias."},
         {"id": "q08", "dimension": "aplicacao", "text": "A cliente consegue perceber por onde começar e quais são as diferenças entre as principais opções que apresento."},
-        {"id": "q09", "dimension": "prova", "text": "Sei, através de encomendas, perguntas, margem e capacidade de produção ou stock, quais são os produtos que merecem mais destaque."}
+        {"id": "q09", "dimension": "prova", "text": "Com base em encomendas, perguntas, margem e capacidade de produção ou stock, sei quais são os produtos que merecem mais destaque."}
       ]
     },
     {
@@ -123,7 +123,7 @@
       "questions": [
         {"id": "q28", "dimension": "clareza", "text": "Tenho um plano para os próximos 30 dias que liga os produtos que quero vender aos conteúdos e às datas que interessam às minhas clientes."},
         {"id": "q29", "dimension": "aplicacao", "text": "Preparo campanhas e lançamentos com tempo para fotografias, conteúdos, materiais, stock, personalização, produção e entrega."},
-        {"id": "q30", "dimension": "prova", "text": "No final de uma campanha ou mês, revejo o que chamou atenção, gerou perguntas, vendeu ou ficou parado e uso essa leitura no plano seguinte."}
+        {"id": "q30", "dimension": "prova", "text": "No final de uma campanha ou mês, revejo o que chamou a atenção, gerou perguntas, vendeu ou ficou parado e uso essa leitura no plano seguinte."}
       ]
     }
   ]

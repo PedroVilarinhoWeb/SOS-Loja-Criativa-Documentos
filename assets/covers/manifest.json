@@ -1,0 +1,72 @@
+[
+  {
+    "branch": "personalizados",
+    "module": "SOS-01",
+    "path": "assets/covers/sos-01.webp",
+    "source": "output\\pdf\\final\\SOS-01 Cliente e Momento de Compra\\01 Personalizados\\SOS-01_Cliente_e_Momento_de_Compra_PERSONALIZADOS_FINAL.pdf",
+    "bytes": 26782
+  },
+  {
+    "branch": "personalizados",
+    "module": "SOS-02",
+    "path": "assets/covers/sos-02.webp",
+    "source": "output\\pdf\\final\\SOS-02 a SOS-10\\SOS-02 Posicionamento que se Percebe\\01 Personalizados\\SOS-02_Posicionamento_que_se_Percebe_PERSONALIZADOS_FINAL.pdf",
+    "bytes": 26428
+  },
+  {
+    "branch": "personalizados",
+    "module": "SOS-03",
+    "path": "assets/covers/sos-03.webp",
+    "source": "output\\pdf\\final\\SOS-02 a SOS-10\\SOS-03 Oferta Principal\\01 Personalizados\\SOS-03_Oferta_Principal_PERSONALIZADOS_FINAL.pdf",
+    "bytes": 25878
+  },
+  {
+    "branch": "personalizados",
+    "module": "SOS-04",
+    "path": "assets/covers/sos-04.webp",
+    "source": "output\\pdf\\final\\SOS-02 a SOS-10\\SOS-04 Preço e Valor Percebido\\01 Personalizados\\SOS-04_Preco_e_Valor_Percebido_PERSONALIZADOS_FINAL.pdf",
+    "bytes": 27122
+  },
+  {
+    "branch": "personalizados",
+    "module": "SOS-05",
+    "path": "assets/covers/sos-05.webp",
+    "source": "output\\pdf\\final\\SOS-02 a SOS-10\\SOS-05 Conteúdo e Hooks\\01 Personalizados\\SOS-05_Conteudo_e_Hooks_PERSONALIZADOS_FINAL.pdf",
+    "bytes": 26646
+  },
+  {
+    "branch": "personalizados",
+    "module": "SOS-06",
+    "path": "assets/covers/sos-06.webp",
+    "source": "output\\pdf\\final\\SOS-02 a SOS-10\\SOS-06 Alcance e Divulgação\\01 Personalizados\\SOS-06_Alcance_e_Divulgacao_PERSONALIZADOS_FINAL.pdf",
+    "bytes": 27310
+  },
+  {
+    "branch": "personalizados",
+    "module": "SOS-07",
+    "path": "assets/covers/sos-07.webp",
+    "source": "output\\pdf\\final\\SOS-02 a SOS-10\\SOS-07 Prova e Confiança\\01 Personalizados\\SOS-07_Prova_e_Confianca_PERSONALIZADOS_FINAL.pdf",
+    "bytes": 25974
+  },
+  {
+    "branch": "personalizados",
+    "module": "SOS-08",
+    "path": "assets/covers/sos-08.webp",
+    "source": "output\\pdf\\final\\SOS-02 a SOS-10\\SOS-08 Caminho de Compra\\01 Personalizados\\SOS-08_Caminho_de_Compra_PERSONALIZADOS_FINAL.pdf",
+    "bytes": 26576
+  },
+  {
+    "branch": "personalizados",
+    "module": "SOS-09",
+    "path": "assets/covers/sos-09.webp",
+    "source": "output\\pdf\\final\\SOS-02 a SOS-10\\SOS-09 Fecho e Acompanhamento\\01 Personalizados\\SOS-09_Fecho_e_Acompanhamento_PERSONALIZADOS_FINAL.pdf",
+    "bytes": 26230
+  },
+  {
+    "branch": "personalizados",
+    "module": "SOS-10",
+    "path": "assets/covers/sos-10.webp",
+    "source": "output\\pdf\\final\\SOS-02 a SOS-10\\SOS-10 Ritmo e Campanhas\\01 Personalizados\\SOS-10_Ritmo_e_Campanhas_PERSONALIZADOS_FINAL.pdf",
+    "bytes": 27040
+  }
+]

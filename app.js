@@ -7,9 +7,9 @@ const planModules = [
   },
   {
     title: "SOS-02 Posicionamento que se Percebe",
-    problem: "Quem chega à página vê produtos, mas não percebe rapidamente o que a loja vende nem para quem trabalha.",
-    work: "Revês apresentação, oferta visível, linguagem e sinais que ajudam a loja a ser entendida em poucos segundos.",
-    result: "Uma explicação curta e coerente da loja, pronta para orientar o perfil e a comunicação.",
+    problem: "Quem chega à página vê produtos, mas não reconhece para que compra a loja é indicada nem que diferença consegue provar.",
+    work: "Registas a leitura atual, escolhes a compra, ligas a diferença a provas e testas a nova apresentação com outra pessoa.",
+    result: "Uma frase principal, uma descrição curta, uma bio e provas distribuídas pela página.",
   },
   {
     title: "SOS-03 Oferta Principal",
@@ -19,45 +19,45 @@ const planModules = [
   },
   {
     title: "SOS-04 Preço e Valor Percebido",
-    problem: "O preço aparece antes de a cliente perceber materiais, processo, condições e valor da escolha.",
-    work: "Organizas aquilo que precisa de estar visível antes do preço e a forma de apresentar opções sem desvalorizar.",
-    result: "Uma apresentação clara do preço, das condições e do valor percebido.",
+    problem: "A loja cobra sem conseguir confirmar quanto custam os materiais, o tempo, as perdas e os custos da venda.",
+    work: "Reúnes os valores de uma venda real, calculas custo e remuneração e escreves as regras para quantidades, alterações e extras.",
+    result: "Uma conta que podes rever e uma apresentação do preço com condições e limites.",
   },
   {
     title: "SOS-05 Conteúdo e Hooks",
     problem: "As publicações mostram o produto, mas não dão à compradora uma razão concreta para parar e reconhecer a situação.",
-    work: "Transformas produto, utilização, dúvida, ocasião e prova em hooks e peças de conteúdo.",
-    result: "Matéria organizada para criar conteúdo ligado ao que a cliente procura.",
+    work: "Ligas situação, abertura, demonstração e ação seguinte a uma oferta que a loja consegue mostrar.",
+    result: "Peças de conteúdo prontas a testar e critérios para manter, corrigir ou retirar cada uma.",
   },
   {
     title: "SOS-06 Alcance e Divulgação",
-    problem: "A divulgação depende dos seguidores atuais e de publicações soltas sem um destino definido.",
-    work: "Escolhes canais, ações, parceiros e formatos adequados à oferta e à capacidade real da loja.",
-    result: "Um plano que indica onde divulgar, o que levar e como avaliar a resposta.",
+    problem: "A loja recebe atenção, mas não consegue dizer de onde vieram os contactos nem o que aconteceu depois.",
+    work: "Escolhes uma fonte de descoberta, manténs a mesma oferta durante quatro semanas e registas cada contacto adequado.",
+    result: "Um teste documentado e uma decisão sobre continuar, alterar, repetir ou abandonar a fonte.",
   },
   {
     title: "SOS-07 Prova e Confiança",
     problem: "A cliente precisa de confiar, mas encontra elogios vagos ou pouca prova do produto e do processo.",
-    work: "Recolhes provas específicas e ligas cada uma à dúvida que precisa de reduzir.",
-    result: "Um mapa de provas para utilizar no perfil, no conteúdo e na conversa de venda.",
+    work: "Ligas cada dúvida a uma prova com oferta, contexto, autorização, limite e data de revisão.",
+    result: "Uma biblioteca de provas que sabes onde usar e aquilo que cada peça pode afirmar.",
   },
   {
     title: "SOS-08 Caminho de Compra",
     problem: "A pessoa interessa-se, mas não percebe como escolher, encomendar, pagar ou receber.",
-    work: "Mapeias os passos reais da compra e retiras perguntas e bloqueios que podem ser evitados.",
-    result: "Um caminho de compra claro, desde a primeira visita até à confirmação da encomenda.",
+    work: "Reconstróis uma encomenda, decides que dados entram em cada etapa e defines quem confirma cada versão.",
+    result: "Um percurso e uma confirmação que outra pessoa consegue seguir sem abrir a conversa original.",
   },
   {
     title: "SOS-09 Fecho e Acompanhamento",
     problem: "Existem conversas que param depois do preço, de uma dúvida ou da resposta “vou pensar”.",
     work: "Preparas respostas, momentos de retoma e acompanhamento sem pressionar a cliente.",
-    result: "Um sistema de conversa que ajuda a avançar e regista o que ficou pendente.",
+    result: "Respostas por estado, retomas com motivo, regras de paragem e um pós-venda marcado no momento certo.",
   },
   {
     title: "SOS-10 Ritmo e Campanhas",
     problem: "Produtos, datas e conteúdos entram em campanha sem respeitar o tempo e a capacidade de produção.",
-    work: "Cruzas calendário, procura, produção, stock e divulgação antes de prometer.",
-    result: "Um ritmo de campanhas executável e critérios para repetir, reduzir ou ajustar.",
+    work: "Partes da data da cliente, descontas preparação, stock e trabalho confirmado e só depois marcas a abertura.",
+    result: "Um calendário de 90 dias com capacidade, preparação, abertura, cortes, entrega e revisão.",
   },
 ];
 
@@ -159,7 +159,7 @@ const branchContent = {
     text: "Os exemplos ajudam a separar quem compra de quem recebe, a recolher pedidos reais e a perceber em que ocasião a personalização passa de “bonita” a necessária.",
     example: "uma caneca procurada para oferecer a uma professora, com data limite, mensagem escolhida e receio de não chegar a tempo.",
     image: "assets/editorial/personalizados.webp",
-    alt: "Sacola e caneca personalizadas com o logótipo SOS Loja Criativa numa bancada de trabalho",
+    alt: "Saco de pano e caneca personalizados com o logótipo SOS Loja Criativa numa bancada de trabalho",
   },
   artesanato: {
     kicker: "Artesanato e peças feitas à mão",
@@ -302,8 +302,17 @@ const year = document.querySelector("[data-year]");
 if (year) year.textContent = String(new Date().getFullYear());
 
 const header = document.querySelector("[data-header]");
-if (header) {
-  const updateHeader = () => header.classList.toggle("is-scrolled", window.scrollY > 12);
-  updateHeader();
-  window.addEventListener("scroll", updateHeader, { passive: true });
+const mobileCta = document.querySelector(".mobile-cta");
+const hero = document.querySelector(".hero");
+
+if (header || mobileCta) {
+  const updatePageControls = () => {
+    header?.classList.toggle("is-scrolled", window.scrollY > 12);
+    if (mobileCta && hero) {
+      const revealPoint = Math.max(420, hero.offsetHeight * 0.72);
+      mobileCta.classList.toggle("is-visible", window.scrollY > revealPoint);
+    }
+  };
+  updatePageControls();
+  window.addEventListener("scroll", updatePageControls, { passive: true });
 }

@@ -22,10 +22,11 @@ function sosWebCalculate(state) {
   const value = (name) => ensure(name).value || "";
   const score = (name) => Number.parseInt(value(name), 10) || 0;
   const totalValue = value("result_total");
+  const complete = totalValue !== "" && totalValue !== "-";
   return {
-    complete: totalValue !== "",
+    complete,
     status: value("result_status"),
-    total: totalValue === "" ? null : Number.parseInt(totalValue, 10),
+    total: complete ? Number.parseInt(totalValue, 10) : null,
     totalBand: value("result_total_band"),
     categories: SOS_DATA.categories.map((category) => ({
       id: category.id,

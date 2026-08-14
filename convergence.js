@@ -202,12 +202,10 @@ export function mountConvergencePreview() {
   }
 
   canvas.dataset.mounted = "true";
-  const forceMotionForLocalReview =
-    document.documentElement.classList.contains("motion-enabled");
-  const reducedMotion =
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
-    !forceMotionForLocalReview;
-  const mobile = window.matchMedia("(max-width: 760px)").matches;
+  const parameters = new URLSearchParams(window.location.search);
+  const staticMode = parameters.has("static") || parameters.has("reduce-motion");
+  const canAnimate = () => !staticMode;
+  let mobile = window.matchMedia("(max-width: 760px)").matches;
 
   let renderer;
   try {
@@ -253,7 +251,17 @@ export function mountConvergencePreview() {
   let active = false;
   let sampled = false;
   let previousTime = performance.now();
+  let frameCount = 0;
   const point = new THREE.Vector3();
+
+  const applyResponsiveLayout = () => {
+    mobile = section.clientWidth <= 760;
+    section.dataset.layout = mobile ? "mobile" : "desktop";
+    camera.position.set(0, 0, mobile ? 21.5 : 16.5);
+    funnel.position.set(mobile ? 0 : 3.25, mobile ? -1.25 : 0, 0);
+    if (mobile) funnel.scale.set(1.16, 1.3, 1.16);
+    else funnel.scale.setScalar(1.2);
+  };
 
   const resize = () => {
     const nextWidth = section.clientWidth;
@@ -262,6 +270,7 @@ export function mountConvergencePreview() {
 
     width = nextWidth;
     height = nextHeight;
+    applyResponsiveLayout();
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
@@ -297,11 +306,13 @@ export function mountConvergencePreview() {
   };
 
   const render = (time = 0) => {
+    frameCount += 1;
+    canvas.dataset.frame = String(frameCount);
     const seconds = time / 1000;
     const delta = Math.min((time - previousTime) / 1000, 0.05);
     previousTime = time;
 
-    if (!reducedMotion) {
+    if (canAnimate()) {
       funnel.rotation.y += delta * 0.18;
       funnel.rotation.z = Math.sin(seconds * 0.28) * 0.012;
       updateComets(seconds);
@@ -316,15 +327,21 @@ export function mountConvergencePreview() {
       section.dataset.ready = "true";
     }
 
-    if (active && !reducedMotion && !document.hidden) {
+    if (active && canAnimate() && !document.hidden) {
+      canvas.dataset.motion = "running";
       animationFrame = requestAnimationFrame(render);
     } else {
+      canvas.dataset.motion = canAnimate() ? "stopped" : "paused";
       animationFrame = 0;
     }
   };
 
   const start = () => {
-    if (animationFrame || !active || document.hidden) return;
+    if (animationFrame || !active || document.hidden || !canAnimate()) {
+      canvas.dataset.motion = canAnimate() ? "stopped" : "paused";
+      return;
+    }
+    canvas.dataset.motion = "running";
     previousTime = performance.now();
     animationFrame = requestAnimationFrame(render);
   };
@@ -332,6 +349,7 @@ export function mountConvergencePreview() {
   const stop = () => {
     if (animationFrame) cancelAnimationFrame(animationFrame);
     animationFrame = 0;
+    canvas.dataset.motion = staticMode ? "paused" : "stopped";
   };
 
   const resizeObserver = new ResizeObserver(resize);
@@ -351,7 +369,6 @@ export function mountConvergencePreview() {
     if (document.hidden) stop();
     else start();
   });
-
   resize();
   active = true;
   render(performance.now());
