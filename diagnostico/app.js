@@ -1,4 +1,5 @@
 const SOS_STORAGE_KEY = "sos-diagnostico-0-100-v3";
+const SOS_STORAGE_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;
 
 function sosWebCalculate(state) {
   const fields = {};
@@ -84,7 +85,7 @@ function sosReadForm(form) {
 
 function sosSaveState(state) {
   try {
-    localStorage.setItem(SOS_STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(SOS_STORAGE_KEY, JSON.stringify({ ...state, savedAt: Date.now() }));
     return true;
   } catch (_) {
     return false;
@@ -124,7 +125,17 @@ function sosSanitiseState(raw) {
 
 function sosLoadState() {
   try {
-    return sosSanitiseState(JSON.parse(localStorage.getItem(SOS_STORAGE_KEY) || "null"));
+    const stored = localStorage.getItem(SOS_STORAGE_KEY);
+    if (!stored) return sosSanitiseState(null);
+    const raw = JSON.parse(stored);
+    const savedAt = Number(raw && raw.savedAt);
+    if (Number.isFinite(savedAt) && Date.now() - savedAt > SOS_STORAGE_MAX_AGE_MS) {
+      localStorage.removeItem(SOS_STORAGE_KEY);
+      return sosSanitiseState(null);
+    }
+    const safe = sosSanitiseState(raw);
+    if (!Number.isFinite(savedAt)) sosSaveState(safe);
+    return safe;
   } catch (_) {
     try { localStorage.removeItem(SOS_STORAGE_KEY); } catch (_) {}
     return sosSanitiseState(null);
