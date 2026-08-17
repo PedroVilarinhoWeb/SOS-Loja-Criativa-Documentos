@@ -529,9 +529,6 @@ summary:focus-visible {
 }
 
 .convergence-preview {
-  --band-color: var(--green-900);
-  --band-edge-top: var(--ivory);
-  --band-edge-bottom: var(--paper);
   position: relative;
   min-height: 520px;
   display: none;
@@ -562,7 +559,14 @@ html.has-convergence-preview .convergence-preview {
 }
 
 .convergence-preview::after {
-  display: none;
+  content: "";
+  position: absolute;
+  z-index: 5;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: rgba(234, 214, 166, 0.55);
 }
 
 .convergence-canvas {
@@ -694,9 +698,6 @@ html.has-convergence-preview .convergence-preview {
 }
 
 .band-dark {
-  --band-color: var(--green-900);
-  --band-edge-top: var(--paper);
-  --band-edge-bottom: var(--paper);
   position: relative;
   padding: 74px 0;
   overflow: hidden;
@@ -988,9 +989,6 @@ html.has-convergence-preview .convergence-preview {
 }
 
 .plan-showcase {
-  --band-color: var(--green-900);
-  --band-edge-top: var(--ivory);
-  --band-edge-bottom: var(--paper);
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -1416,9 +1414,6 @@ html.has-convergence-preview .convergence-preview {
 }
 
 .final-cta {
-  --band-color: var(--green-950);
-  --band-edge-top: var(--ivory);
-  --band-edge-bottom: var(--paper);
   position: relative;
   padding: 92px 0;
   overflow: hidden;
@@ -1426,23 +1421,6 @@ html.has-convergence-preview .convergence-preview {
   background: var(--green-950);
   color: var(--white);
   text-align: center;
-}
-
-.convergence-preview,
-.diagnostic-cta,
-.plan-showcase,
-.final-cta {
-  background: linear-gradient(
-    to bottom,
-    var(--band-edge-top) 0,
-    color-mix(in srgb, var(--band-edge-top) 72%, var(--band-color)) 12px,
-    color-mix(in srgb, var(--band-edge-top) 30%, var(--band-color)) 30px,
-    var(--band-color) 56px,
-    var(--band-color) calc(100% - 56px),
-    color-mix(in srgb, var(--band-edge-bottom) 30%, var(--band-color)) calc(100% - 30px),
-    color-mix(in srgb, var(--band-edge-bottom) 72%, var(--band-color)) calc(100% - 12px),
-    var(--band-edge-bottom) 100%
-  );
 }
 
 .final-cta .section-inner {
@@ -1461,34 +1439,6 @@ html.has-convergence-preview .convergence-preview {
   pointer-events: none;
   opacity: 0.74;
   mix-blend-mode: screen;
-}
-
-.convergence-preview::before,
-.convergence-canvas,
-.sos-flow-canvas,
-.sos-rain-canvas {
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent 0,
-    rgba(0, 0, 0, 0.28) 12px,
-    rgba(0, 0, 0, 0.72) 30px,
-    #000 56px,
-    #000 calc(100% - 56px),
-    rgba(0, 0, 0, 0.72) calc(100% - 30px),
-    rgba(0, 0, 0, 0.28) calc(100% - 12px),
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    transparent 0,
-    rgba(0, 0, 0, 0.28) 12px,
-    rgba(0, 0, 0, 0.72) 30px,
-    #000 56px,
-    #000 calc(100% - 56px),
-    rgba(0, 0, 0, 0.72) calc(100% - 30px),
-    rgba(0, 0, 0, 0.28) calc(100% - 12px),
-    transparent 100%
-  );
 }
 
 .convergence-preview > .sos-rain-canvas {
