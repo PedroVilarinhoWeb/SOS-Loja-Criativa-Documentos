@@ -152,6 +152,63 @@ function initPlanShowcase() {
 
 initPlanShowcase();
 
+function initPreviewReader() {
+  const reader = document.querySelector("[data-preview-reader]");
+  const readerImage = reader?.querySelector("[data-preview-reader-image]");
+  const readerTitle = reader?.querySelector("[data-preview-reader-title]");
+  const readerViewport = reader?.querySelector(".preview-reader-viewport");
+  const originalLink = reader?.querySelector("[data-preview-original]");
+  const closeButton = reader?.querySelector("[data-preview-close]");
+  const triggers = document.querySelectorAll("[data-preview-open]");
+
+  if (
+    typeof HTMLDialogElement === "undefined" ||
+    !(reader instanceof HTMLDialogElement) ||
+    !(readerImage instanceof HTMLImageElement)
+  ) return;
+
+  let opener = null;
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener("click", (event) => {
+      if (typeof reader.showModal !== "function") return;
+
+      const source = trigger.getAttribute("href");
+      const preview = trigger.querySelector("img");
+      if (!source || !(preview instanceof HTMLImageElement)) return;
+      if (reader.open) return;
+
+      event.preventDefault();
+      opener = trigger;
+      readerImage.src = source;
+      readerImage.alt = preview.alt;
+      if (readerTitle) readerTitle.textContent = trigger.dataset.previewTitle || "Página de exemplo";
+      if (originalLink instanceof HTMLAnchorElement) originalLink.href = source;
+      document.body.classList.add("preview-reader-open");
+      reader.showModal();
+      requestAnimationFrame(() => {
+        if (readerViewport instanceof HTMLElement) {
+          readerViewport.scrollTop = 0;
+          readerViewport.scrollLeft = 0;
+        }
+      });
+    });
+  });
+
+  closeButton?.addEventListener("click", () => reader.close());
+  reader.addEventListener("click", (event) => {
+    if (event.target === reader) reader.close();
+  });
+  reader.addEventListener("close", () => {
+    document.body.classList.remove("preview-reader-open");
+    readerImage.removeAttribute("src");
+    if (opener instanceof HTMLElement) opener.focus();
+    opener = null;
+  });
+}
+
+initPreviewReader();
+
 const branchContent = {
   personalizados: {
     kicker: "Personalizados e presentes à medida",

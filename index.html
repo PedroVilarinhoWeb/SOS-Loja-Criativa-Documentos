@@ -20,8 +20,8 @@
   <title>SOS Loja Criativa | Descobre o que a tua loja precisa primeiro</title>
   <link rel="canonical" href="https://soslojacriativa.pt/">
   <link rel="icon" type="image/png" href="assets/logo-icon.png">
-  <link rel="stylesheet" href="styles.css?v=20260814-documentacao-v2a">
-  <script src="app.js?v=20260814-documentacao-v2a" defer></script>
+  <link rel="stylesheet" href="styles.css?v=20260817-preview-reader-1">
+  <script src="app.js?v=20260817-preview-reader-1" defer></script>
   <script src="sos-motion.js?v=20260814-documentacao-v2a" defer></script>
 </head>
 <body>
@@ -211,15 +211,17 @@
         <div class="preview-layout">
           <div class="preview-stack" role="region" aria-label="Páginas reais do Plano SOS-01 Artesanato" tabindex="0">
             <figure class="preview-page preview-back">
-              <div class="preview-sheet">
+              <a class="preview-sheet preview-trigger" href="assets/previews/sos01-artesanato-leitura-v11.png" target="_blank" rel="noopener" data-preview-open data-preview-title="Leitura aplicada" aria-label="Abrir a página de leitura aplicada em tamanho grande" aria-haspopup="dialog">
                 <img src="assets/previews/sos01-artesanato-leitura-v11.png" alt="Página da versão final do Plano SOS-01 Artesanato com a explicação de um sinal de compra utilizável" width="1323" height="1871" loading="lazy">
-              </div>
+                <span class="preview-open-label" aria-hidden="true">Abrir para ler</span>
+              </a>
               <figcaption>Leitura aplicada</figcaption>
             </figure>
             <figure class="preview-page preview-front">
-              <div class="preview-sheet">
+              <a class="preview-sheet preview-trigger" href="assets/previews/sos01-artesanato-folha-v11.png" target="_blank" rel="noopener" data-preview-open data-preview-title="Folha de trabalho" aria-label="Abrir a folha de trabalho em tamanho grande" aria-haspopup="dialog">
                 <img src="assets/previews/sos01-artesanato-folha-v11.png" alt="Página da versão final do Plano SOS-01 Artesanato com a folha de trabalho para encontrar o início da procura" width="1323" height="1871" loading="lazy">
-              </div>
+                <span class="preview-open-label" aria-hidden="true">Abrir para ler</span>
+              </a>
               <figcaption>Folha de trabalho</figcaption>
             </figure>
           </div>
@@ -420,6 +422,24 @@
       </div>
     </section>
   </main>
+
+  <dialog class="preview-reader" data-preview-reader aria-labelledby="preview-reader-title">
+    <div class="preview-reader-shell">
+      <header class="preview-reader-header">
+        <div>
+          <p>Plano SOS-01 · Artesanato</p>
+          <h2 id="preview-reader-title" data-preview-reader-title>Página de exemplo</h2>
+        </div>
+        <div class="preview-reader-actions">
+          <a href="assets/previews/sos01-artesanato-leitura-v11.png" target="_blank" rel="noopener" data-preview-original>Abrir original</a>
+          <button type="button" data-preview-close aria-label="Fechar a página ampliada" title="Fechar">×</button>
+        </div>
+      </header>
+      <div class="preview-reader-viewport">
+        <img data-preview-reader-image alt="">
+      </div>
+    </div>
+  </dialog>
 
   <footer class="site-footer">
     <div>
