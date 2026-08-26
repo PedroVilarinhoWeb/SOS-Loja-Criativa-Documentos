@@ -269,12 +269,30 @@ const branchContent = {
 };
 
 const branchTabs = document.querySelectorAll("[data-branch]");
+const branchTabList = document.querySelector(".branch-tabs");
 const branchPanel = document.querySelector("#branch-panel");
 const branchImage = document.querySelector("#branch-image");
 const branchKicker = document.querySelector("#branch-kicker");
 const branchTitle = document.querySelector("#branch-title");
 const branchText = document.querySelector("#branch-text");
 const branchExample = document.querySelector("#branch-example");
+const branchMobileLayout = window.matchMedia("(max-width: 760px)");
+
+function placeBranchTabs() {
+  if (!(branchTabList instanceof HTMLElement) || !(branchPanel instanceof HTMLElement)) return;
+  if (branchMobileLayout.matches) {
+    branchPanel.insertAdjacentElement("afterend", branchTabList);
+  } else {
+    branchPanel.insertAdjacentElement("beforebegin", branchTabList);
+  }
+}
+
+placeBranchTabs();
+if (typeof branchMobileLayout.addEventListener === "function") {
+  branchMobileLayout.addEventListener("change", placeBranchTabs);
+} else {
+  branchMobileLayout.addListener(placeBranchTabs);
+}
 
 Object.values(branchContent).forEach(({ image }) => {
   const preloader = new Image();
@@ -323,7 +341,13 @@ async function selectBranch(branchId) {
 }
 
 branchTabs.forEach((tab) => {
-  tab.addEventListener("click", () => void selectBranch(tab.dataset.branch));
+  tab.addEventListener("click", (event) => {
+    void selectBranch(tab.dataset.branch);
+    const pointerActivation = event.detail > 0;
+    if (pointerActivation && branchMobileLayout.matches && branchPanel instanceof HTMLElement) {
+      branchPanel.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
+    }
+  });
   tab.addEventListener("keydown", (event) => {
     const tabs = Array.from(branchTabs);
     const index = tabs.indexOf(tab);

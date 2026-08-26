@@ -217,10 +217,10 @@ summary:focus-visible {
 
 .hero {
   position: relative;
-  min-height: 760px;
+  min-height: 890px;
   overflow: hidden;
   isolation: isolate;
-  padding: 350px 24px 30px;
+  padding: 410px 24px 34px;
   background: var(--ivory);
   border-bottom: 1px solid var(--gold-200);
 }
@@ -237,10 +237,10 @@ summary:focus-visible {
 .hero-logo-stage {
   position: absolute;
   z-index: 0;
-  top: 58px;
+  top: 70px;
   right: 0;
   left: 0;
-  height: 300px;
+  height: 340px;
   overflow: hidden;
   pointer-events: none;
 }
@@ -542,8 +542,14 @@ summary:focus-visible {
   padding-top: 14px;
   border-top: 1px solid rgba(157, 110, 29, 0.35);
   color: var(--muted);
-  font-size: 13px;
+  font-size: 17px;
   font-weight: 700;
+  line-height: 1.45;
+}
+
+.hero-trust strong {
+  color: var(--green-900);
+  font-weight: 900;
 }
 
 .visually-hidden {
@@ -840,6 +846,7 @@ html.has-convergence-preview .convergence-preview {
 }
 
 .branch-stage {
+  scroll-margin-top: 8px;
   min-height: 480px;
   display: grid;
   grid-template-columns: minmax(340px, 0.95fr) minmax(0, 1.05fr);
@@ -1787,12 +1794,12 @@ body.preview-reader-open {
   }
 
   .hero {
-    min-height: 800px;
-    padding: 420px 24px 34px;
+    min-height: 930px;
+    padding: 440px 24px 36px;
   }
 
   .hero-logo-stage {
-    top: 68px;
+    top: 76px;
     right: 0;
     left: 0;
     height: 350px;
@@ -1838,11 +1845,11 @@ body.preview-reader-open {
 
 @media (max-width: 760px) {
   html {
-    scroll-padding-top: 76px;
+    scroll-padding-top: 116px;
   }
 
   body {
-    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 0;
     font-size: 16px;
   }
 
@@ -1907,30 +1914,67 @@ body.preview-reader-open {
   }
 
   .site-header {
-    height: 68px;
+    height: 106px;
     grid-template-columns: 1fr auto;
-    padding: 8px 14px;
+    grid-template-rows: 48px 34px;
+    column-gap: 8px;
+    row-gap: 6px;
+    padding: 6px 12px 8px;
   }
 
-  .brand {
-    width: 184px;
+  .site-header .brand {
+    width: 142px;
+    grid-column: 1;
+    grid-row: 1;
   }
 
   .brand img {
-    height: 50px;
+    height: 44px;
   }
 
   .site-header .button {
-    display: none;
+    min-height: 40px;
+    display: inline-flex;
+    padding: 8px 10px;
+    font-size: 12px;
+    white-space: nowrap;
   }
 
   .header-actions {
+    grid-column: 2;
+    grid-row: 1;
     gap: 0;
   }
 
+  .main-nav {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 0 2px 4px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .main-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .main-nav a {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    font-size: 12px;
+    line-height: 30px;
+    white-space: nowrap;
+  }
+
   .hero {
-    min-height: 620px;
-    padding: 195px 18px 18px;
+    min-height: 790px;
+    padding: 292px 18px 22px;
   }
 
   .hero::before {
@@ -1938,10 +1982,10 @@ body.preview-reader-open {
   }
 
   .hero-logo-stage {
-    top: 42px;
+    top: 112px;
     right: 0;
     left: 0;
-    height: 155px;
+    height: 170px;
   }
 
   .hero-logo {
@@ -2029,7 +2073,7 @@ body.preview-reader-open {
   .hero-trust {
     margin-top: 14px;
     padding-top: 12px;
-    font-size: 12px;
+    font-size: 15px;
   }
 
   .section-inner {
@@ -2116,7 +2160,19 @@ body.preview-reader-open {
   .branch-stage {
     min-height: 0;
     gap: 28px;
-    padding: 26px 0;
+    margin-top: 0;
+    padding: 26px 0 20px;
+    border-bottom: 0;
+  }
+
+  .branch-tabs {
+    margin-top: 0;
+    padding: 18px 0 12px;
+    border-top: 1px solid var(--gold-200);
+  }
+
+  .branch-tab {
+    min-height: 50px;
   }
 
   .branch-image-wrap {
@@ -2264,7 +2320,7 @@ body.preview-reader-open {
     bottom: calc(10px + env(safe-area-inset-bottom, 0px));
     left: 10px;
     min-height: 52px;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     border: 1px solid var(--gold-500);
@@ -2298,6 +2354,14 @@ body.preview-reader-open {
 
   .brand {
     width: 164px;
+  }
+
+  .main-nav {
+    gap: 8px;
+  }
+
+  .main-nav a {
+    font-size: 11px;
   }
 
   .preview-stack {
