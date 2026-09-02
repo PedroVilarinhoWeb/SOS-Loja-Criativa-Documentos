@@ -1,3 +1,5 @@
-# SOS Loja Criativa - arquivo
+# SOS Loja Criativa
 
-Os PDFs existentes em `arquivo-pdf/` permanecem apenas como histórico. A versão final do Diagnóstico 0-100 não é publicada neste repositório.
+Este repositório publica a landing page, o Diagnóstico SOS gratuito e as páginas legais.
+
+Os antigos diagnósticos em PDF foram retirados da área pública. O diagnóstico em utilização encontra-se em `diagnostico/` e calcula o resultado diretamente no navegador.
