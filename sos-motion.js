@@ -1,7 +1,13 @@
 (() => {
   const parameters = new URLSearchParams(window.location.search);
   const staticMode = parameters.has("static") || parameters.has("reduce-motion");
-  const canAnimate = () => !staticMode;
+  const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const canAnimate = () => !staticMode && !motionPreference.matches;
+
+  motionPreference.addEventListener("change", () => {
+    document.documentElement.classList.toggle("motion-enabled", canAnimate());
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
 
   document.documentElement.classList.toggle("motion-enabled", canAnimate());
 

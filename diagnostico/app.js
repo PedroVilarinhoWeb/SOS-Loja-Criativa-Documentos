@@ -268,6 +268,8 @@ function sosRenderScores(container, scores) {
 }
 
 function sosRenderPriorityElement(element, priority) {
+  element.hidden = !priority || !priority.title || !priority.action;
+  if (element.hidden) return;
   element.querySelector("[data-priority-title]").textContent = priority.title;
   element.querySelector("[data-priority-base]").textContent = priority.base;
   element.querySelector("[data-priority-evidence]").textContent = priority.evidence || "Não foram encontradas respostas fracas adicionais nesta área.";
@@ -295,6 +297,20 @@ function sosRenderResult(result) {
   document.getElementById("result-next-reason").textContent = result.nextReason;
   document.getElementById("result-cta-message").textContent = result.ctaMessage;
   document.getElementById("result-offer-mode").textContent = result.offerMode;
+  const purchase = document.getElementById("result-buy-plan");
+  const purchaseNote = document.getElementById("result-purchase-note");
+  const branch = document.querySelector('input[name="profile_branch"]:checked')?.value;
+  const module = String(result.nextFile || "").match(/SOS-(0[1-9]|10)\b/);
+  const branchCodes = { personalizados: "PER", artesanato: "ART", moda: "MOD", papelaria: "PAP", eventos: "EVE", pastelaria: "PAS", materiais: "MAT" };
+  const canRecommend = Boolean(module && branchCodes[branch] && result.total < 100);
+  purchase.hidden = !canRecommend;
+  purchaseNote.hidden = !canRecommend;
+  if (canRecommend) {
+    const url = new URL("https://sos-loja-criativa.rea-de-traba-5298.chatgpt.site/comprar");
+    url.search = new URLSearchParams({ oferta: "PLANO", ramo: branchCodes[branch], planos: module[0] }).toString();
+    purchase.href = url.href;
+    purchase.querySelector("span").textContent = `Ver o ${module[0]} para o meu ramo`;
+  } else purchase.removeAttribute("href");
   const offerSecondary = document.getElementById("result-offer-secondary");
   offerSecondary.textContent = result.offerSecondary;
   offerSecondary.parentElement.hidden = !result.offerSecondary;
