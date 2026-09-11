@@ -72,6 +72,7 @@ backToTopButton?.addEventListener("click", () => {
 });
 
 function initConvergencePreview() {
+  if (!document.querySelector(".convergence-preview")) return;
   document.documentElement.classList.add("has-convergence-preview");
   const script = document.createElement("script");
   script.src = "convergence.bundle.js?v=20260805-no-motion-control-1";
@@ -103,6 +104,43 @@ function initPlanShowcase() {
   const problem = showcase.querySelector("#plan-detail-problem");
   const work = showcase.querySelector("#plan-detail-work");
   const result = showcase.querySelector("#plan-detail-result");
+  const purchaseBranch = showcase.querySelector("#plan-purchase-branch");
+  const purchaseLink = showcase.querySelector("#plan-purchase-link");
+  const purchaseMobileCta = document.querySelector(".mobile-cta");
+  const offerLinks = document.querySelectorAll("[data-offer-link]");
+  let activePlanIndex = 0;
+  let hasChosenPlan = false;
+  const updatePurchase = () => {
+    if (!purchaseBranch || !purchaseLink) return;
+    const planCode = `SOS-${String(activePlanIndex + 1).padStart(2, "0")}`;
+    const url = new URL("https://sos-loja-criativa.rea-de-traba-5298.chatgpt.site/comprar");
+    url.search = new URLSearchParams({ oferta: "PLANO", ramo: purchaseBranch.value, planos: planCode }).toString();
+    purchaseLink.href = url.href;
+    purchaseLink.querySelector("span").textContent = `Escolher ${planCode} — 14,90 €`;
+    showcase.querySelector("#plan-purchase-summary").textContent = `${planCode} · ${purchaseBranch.selectedOptions[0].textContent} · 1 PDF`;
+    for (const link of offerLinks) {
+      const offerUrl = new URL(url.origin + url.pathname);
+      offerUrl.search = new URLSearchParams({ oferta: link.dataset.offerLink, ramo: purchaseBranch.value, alterar: "1" }).toString();
+      // A displayed example is not a selection. Keep only the plan explicitly chosen.
+      if (hasChosenPlan && link.dataset.offerLink !== "COMPLETO") offerUrl.searchParams.set("planos", planCode);
+      link.href = offerUrl.href;
+    }
+    if (hasChosenPlan && purchaseMobileCta) {
+      const selection = purchaseMobileCta.querySelector(".mobile-cta-selection");
+      selection.textContent = `${planCode} · ${purchaseBranch.selectedOptions[0].textContent}`;
+      selection.hidden = false;
+      purchaseMobileCta.querySelector(".button-effect-label").textContent = "Confirmar plano · 14,90 €";
+      purchaseMobileCta.href = url.href;
+      purchaseMobileCta.setAttribute("aria-label", `Confirmar ${planModules[activePlanIndex].title}, ${purchaseBranch.selectedOptions[0].textContent}, 14,90 €`);
+    }
+  };
+  purchaseBranch?.addEventListener("change", updatePurchase);
+  document.addEventListener("sos:branch-selected", (event) => {
+    if (!purchaseBranch) return;
+    const codes = { personalizados: "PER", artesanato: "ART", moda: "MOD", papelaria: "PAP", eventos: "EVE", pastelaria: "PAS", materiais: "MAT" };
+    if (codes[event.detail]) purchaseBranch.value = codes[event.detail];
+    updatePurchase();
+  });
   if (!covers.length || !code || !title || !problem || !work || !result) return;
 
   const renderPlan = (index, keepCoverVisible = false) => {
@@ -116,6 +154,8 @@ function initPlanShowcase() {
     problem.textContent = plan.problem;
     work.textContent = plan.work;
     result.textContent = plan.result;
+    activePlanIndex = index;
+    updatePurchase();
 
     covers.forEach((cover, coverIndex) => {
       const selected = coverIndex === index;
@@ -133,7 +173,7 @@ function initPlanShowcase() {
   };
 
   covers.forEach((cover, index) => {
-    cover.addEventListener("click", () => renderPlan(index));
+    cover.addEventListener("click", () => { hasChosenPlan = true; renderPlan(index); });
     cover.addEventListener("keydown", (event) => {
       let nextIndex = null;
       if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (index + 1) % covers.length;
@@ -142,6 +182,7 @@ function initPlanShowcase() {
       if (event.key === "End") nextIndex = covers.length - 1;
       if (nextIndex === null) return;
       event.preventDefault();
+      hasChosenPlan = true;
       covers[nextIndex].focus();
       renderPlan(nextIndex, true);
     });
@@ -304,6 +345,7 @@ let branchSelection = 0;
 async function selectBranch(branchId) {
   const content = branchContent[branchId];
   if (!content) return;
+  document.dispatchEvent(new CustomEvent("sos:branch-selected", { detail: branchId }));
   const selection = ++branchSelection;
 
   branchTabs.forEach((tab) => {
@@ -369,7 +411,9 @@ branchTabs.forEach((tab) => {
 
 document.querySelectorAll("a[href^='#']").forEach((link) => {
   link.addEventListener("click", (event) => {
-    const target = document.querySelector(link.getAttribute("href"));
+    const href = link.getAttribute("href");
+    if (!href?.startsWith("#") || href.length < 2) return;
+    const target = document.getElementById(decodeURIComponent(href.slice(1)));
     if (!target) return;
     event.preventDefault();
     target.scrollIntoView({ behavior: scrollBehavior(), block: "start" });

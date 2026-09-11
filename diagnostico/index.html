@@ -605,6 +605,22 @@ body.summary-mode { padding-bottom: 0; }
   .results { display: block !important; padding: 0; background: #fff; }
   .priority, .score-item { box-shadow: none; break-inside: avoid; }
 }
+/* Keep the decision and first useful action ahead of the detailed scores. */
+.button[hidden] { display: none !important; }
+.results > .score-band { grid-template-columns: 80px 1fr; gap: 16px; padding: 12px 0; }
+.results .total-score { width: 76px; border-width: 5px; }
+.results .total-score strong { font-size: 28px; }
+.results .total-score small { font-size: 12px; }
+.results .score-copy h2 { font-size: 23px; }
+.results .score-copy p { font-size: 14px; }
+.priority .priority-label { margin-top: 18px; margin-bottom: 6px; }
+.priority .priority-order { margin-top: 12px; color: var(--muted); font-size: 14px; }
+.result-details { margin-top: 20px; padding: 16px 0; border-top: 1px solid var(--line); }
+.result-details summary { min-height: 44px; padding-block: 10px; color: var(--green); font-weight: 800; cursor: pointer; }
+.result-details summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.result-analysis > h2 { margin-top: 24px; font-size: 24px; }
+.direction-final #result-next-file { font-weight: 700; font-size: 19px; }
+@media print { .result-details summary { display: none; } }
 </style>
   <link rel="stylesheet" href="landing-integration.css">
 </head>
@@ -928,29 +944,48 @@ body.summary-mode { padding-bottom: 0; }
     <div class="action-row">
       <button class="button secondary" id="reset-form" type="button"><span class="button-effect-label">Limpar</span></button>
       <button class="button" id="show-result" type="button"><span class="button-effect-label">Ver resultado</span></button>
+      <button class="button secondary" id="review-answers" type="button" hidden><span class="button-effect-label">Rever respostas</span></button>
+      <a class="button" id="result-next-action" href="#results" hidden><span class="button-effect-label">Ver o meu plano</span></a>
     </div>
     <p class="saved-note" id="saved-note" role="status" aria-live="polite">As respostas ficam guardadas neste dispositivo.</p>
 
-    <section class="section results" id="results" hidden tabindex="-1" aria-labelledby="total-band">
+    <section class="section results" id="results" hidden tabindex="-1" aria-labelledby="results-title">
+      <h2 id="results-title">Por onde começar</h2>
       <div class="score-band">
         <div class="total-score"><div><strong id="total-score">0</strong><small>em 100</small></div></div>
         <div class="score-copy"><p class="eyebrow">Resultado geral</p><h2 id="total-band"></h2><p id="result-status"></p></div>
       </div>
-      <h2>Pontuação por categoria</h2>
-      <div class="score-grid" id="category-scores"></div>
-      <h2 style="margin-top:34px">Pontuação por módulo</h2>
-      <div class="score-grid" id="module-scores"></div>
       <article class="priority" id="primary-priority">
   <p class="eyebrow">Prioridade principal</p>
   <h3 data-priority-title></h3>
+  <p class="priority-order">A ordem considera as pontuações, as respostas fracas e as dificuldades que assinalaste. Uma área que serve de base a outra pode vir primeiro, mesmo com uma nota um pouco mais alta.</p>
+  <p class="priority-label">A tua primeira ação</p><p data-priority-action></p>
+  <p class="priority-label">O que vais organizar</p><p data-priority-expected></p>
+  <details class="result-details"><summary>Perceber esta recomendação</summary>
   <p class="priority-label">Leitura da pontuação</p><p data-priority-base></p>
   <p class="priority-label">O que puxou a nota para baixo</p><p data-priority-evidence></p>
   <p class="priority-label">Como aparece no teu ramo</p><p data-priority-branch></p>
-  <p class="priority-label">Começa aqui</p><p data-priority-action></p>
-  <p class="priority-label">O que deve mudar</p><p data-priority-expected></p>
   <div class="route" data-priority-route hidden></div>
+  </details>
 </article>
-      <article class="priority" id="secondary-priority">
+
+      <section class="direction-final">
+        <p class="eyebrow">O plano para este trabalho</p>
+        <h2 id="result-final-route" hidden></h2>
+        <h3>Plano SOS recomendado</h3><p id="result-next-file"></p>
+        <h3>Porque corresponde ao teu resultado</h3><p id="result-next-reason"></p>
+        <h3>Forma de avançar</h3><p id="result-offer-mode"></p>
+        <div><h3>Segundo plano do Percurso ou direção posterior</h3><p id="result-offer-secondary"></p></div>
+        <h3>Ação para avançar</h3><p class="cta-message" id="result-cta-message"></p>
+        <a class="button" id="result-buy-plan" hidden><span class="button-effect-label">Ver o plano recomendado</span></a>
+        <p id="result-purchase-note" hidden>O diagnóstico é gratuito. O plano é opcional e custa 14,90 €. Antes de pagar, podes confirmar o conteúdo, o ramo e as condições da compra.</p>
+      </section>
+      <details class="result-details result-analysis">
+        <summary>Ver todas as pontuações e a prioridade seguinte</summary>
+        <h2>Pontuação por categoria</h2>
+        <div class="score-grid" id="category-scores"></div>
+        <h2>Pontuação por módulo</h2>
+        <div class="score-grid" id="module-scores"></div>      <article class="priority" id="secondary-priority">
   <p class="eyebrow">Passo seguinte</p>
   <h3 data-priority-title></h3>
   <p class="priority-label">Leitura da pontuação</p><p data-priority-base></p>
@@ -960,17 +995,7 @@ body.summary-mode { padding-bottom: 0; }
 
 
 </article>
-      <section class="direction-final">
-        <p class="eyebrow">A tua direção final</p>
-        <h2 id="result-final-route"></h2>
-        <h3>Plano SOS recomendado</h3><p id="result-next-file"></p>
-        <h3>Porque corresponde ao teu resultado</h3><p id="result-next-reason"></p>
-        <h3>Forma de avançar</h3><p id="result-offer-mode"></p>
-        <div><h3>Segundo plano do Percurso ou direção posterior</h3><p id="result-offer-secondary"></p></div>
-        <h3>Ação para avançar</h3><p class="cta-message" id="result-cta-message"></p>
-        <a class="button" id="result-buy-plan" hidden><span class="button-effect-label">Ver o plano recomendado</span></a>
-        <p id="result-purchase-note" hidden>O diagnóstico é gratuito. O plano é opcional e custa 14,90 €. Antes de pagar, podes confirmar o conteúdo, o ramo e as condições da compra.</p>
-      </section>
+      </details>
       <div class="result-actions">
         <button class="button secondary" id="open-report" type="button"><span class="button-effect-label">Abrir resumo</span></button>
         <button class="button secondary" id="print-result" type="button"><span class="button-effect-label">Guardar em PDF</span></button>
@@ -984,6 +1009,6 @@ body.summary-mode { padding-bottom: 0; }
   </main>
 
   <script src="pilot_calculation.js"></script>
-  <script src="app.js?v=20260804-accessibility-1"></script>
+  <script src="app.js?v=20260911-compra-1"></script>
 </body>
 </html>

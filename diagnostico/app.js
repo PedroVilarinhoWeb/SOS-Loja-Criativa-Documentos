@@ -299,6 +299,7 @@ function sosRenderResult(result) {
   document.getElementById("result-offer-mode").textContent = result.offerMode;
   const purchase = document.getElementById("result-buy-plan");
   const purchaseNote = document.getElementById("result-purchase-note");
+  const nextAction = document.getElementById("result-next-action");
   const branch = document.querySelector('input[name="profile_branch"]:checked')?.value;
   const module = String(result.nextFile || "").match(/SOS-(0[1-9]|10)\b/);
   const branchCodes = { personalizados: "PER", artesanato: "ART", moda: "MOD", papelaria: "PAP", eventos: "EVE", pastelaria: "PAS", materiais: "MAT" };
@@ -311,6 +312,8 @@ function sosRenderResult(result) {
     purchase.href = url.href;
     purchase.querySelector("span").textContent = `Ver o ${module[0]} para o meu ramo`;
   } else purchase.removeAttribute("href");
+  nextAction.href = canRecommend ? purchase.href : "#results";
+  nextAction.querySelector("span").textContent = canRecommend ? `Ver ${module[0]} · 14,90 €` : "Ver resultado";
   const offerSecondary = document.getElementById("result-offer-secondary");
   offerSecondary.textContent = result.offerSecondary;
   offerSecondary.parentElement.hidden = !result.offerSecondary;
@@ -367,6 +370,8 @@ function sosInitialise() {
   const results = document.getElementById("results");
   const resultButton = document.getElementById("show-result");
   const resetButton = document.getElementById("reset-form");
+  const reviewButton = document.getElementById("review-answers");
+  const nextAction = document.getElementById("result-next-action");
   const progressFill = document.getElementById("progress-fill");
   const progressTrack = document.getElementById("progress-track");
   const progressCopy = document.getElementById("progress-copy");
@@ -383,6 +388,14 @@ function sosInitialise() {
   const initialState = sosLoadState();
   let currentResult = null;
   let currentState = initialState;
+  let resultViewed = false;
+  const updateResultActions = () => {
+    const viewing = Boolean(resultViewed && currentResult);
+    resetButton.hidden = viewing;
+    resultButton.hidden = viewing;
+    reviewButton.hidden = !viewing;
+    nextAction.hidden = !viewing;
+  };
 
   if (reportParameter) {
     document.body.classList.add("summary-mode");
@@ -423,6 +436,7 @@ function sosInitialise() {
       results.hidden = false;
       showNotice("As 30 respostas estão completas. O resultado já foi calculado.", false);
       if (showResult) {
+        resultViewed = true;
         try { results.scrollIntoView({ behavior: "smooth", block: "start" }); }
         catch (_) { results.scrollIntoView(); }
         try { results.focus({ preventScroll: true }); }
@@ -432,7 +446,9 @@ function sosInitialise() {
       currentResult = null;
       results.hidden = true;
       ready.hidden = true;
+      resultViewed = false;
     }
+    updateResultActions();
     return { state, validation };
   };
 
@@ -442,6 +458,12 @@ function sosInitialise() {
     shareNote.textContent = message;
     try { manualShareText.focus(); manualShareText.select(); } catch (_) {}
   };
+
+  reviewButton.addEventListener("click", () => {
+    resultViewed = false;
+    updateResultActions();
+    sosScrollTo("profile");
+  });
 
   form.addEventListener("change", (event) => {
     if (event.target.name === "difficulty") {
@@ -472,6 +494,15 @@ function sosInitialise() {
     try { localStorage.removeItem(SOS_STORAGE_KEY); } catch (_) {}
     refresh(false);
     sosScrollTo("profile");
+  });
+  let printDetails = [];
+  window.addEventListener("beforeprint", () => {
+    printDetails = Array.from(results.querySelectorAll("details:not([open])"));
+    printDetails.forEach((detail) => { detail.open = true; });
+  });
+  window.addEventListener("afterprint", () => {
+    printDetails.forEach((detail) => { detail.open = false; });
+    printDetails = [];
   });
   document.getElementById("print-result").addEventListener("click", () => window.print());
   document.getElementById("open-report").addEventListener("click", () => {

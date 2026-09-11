@@ -2,14 +2,24 @@
   const parameters = new URLSearchParams(window.location.search);
   const staticMode = parameters.has("static") || parameters.has("reduce-motion");
   const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const canAnimate = () => !staticMode && !motionPreference.matches;
+  const forceMotion = parameters.has("force-motion");
+  let previousMotion;
+  const canAnimate = () => {
+    const enabled = !staticMode && (forceMotion || !motionPreference.matches);
+    // Keep CSS and canvas in sync even if the browser delays its media-change event.
+    if (enabled !== previousMotion) {
+      previousMotion = enabled;
+      document.documentElement.classList.toggle("motion-enabled", enabled);
+    }
+    return enabled;
+  };
 
   motionPreference.addEventListener("change", () => {
-    document.documentElement.classList.toggle("motion-enabled", canAnimate());
+    canAnimate();
     document.dispatchEvent(new Event("visibilitychange"));
   });
 
-  document.documentElement.classList.toggle("motion-enabled", canAnimate());
+  canAnimate();
 
   const clamp = (value, minimum, maximum) =>
     Math.max(minimum, Math.min(maximum, value));
@@ -33,6 +43,111 @@
     context.setTransform(scale, 0, 0, scale, 0, 0);
     return scale;
   };
+
+  function mountHeroAtmosphere(host) {
+    const canvas = document.createElement("canvas");
+    canvas.className = "hero-atmosphere";
+    canvas.setAttribute("aria-hidden", "true");
+    const context = canvas.getContext("2d", { alpha: true });
+    if (!context) return;
+    host.prepend(canvas);
+
+    const random = seededRandom(0x50534f);
+    const lights = Array.from({ length: 48 }, () => ({
+      side: random() < .5 ? -1 : 1,
+      x: random(), y: random(), phase: random() * Math.PI * 2,
+      speed: .35 + random() * .55, size: .7 + random() * 1.2,
+    }));
+    let width = 1, height = 1, scale = 1, frame = 0, lastTime = 0;
+    let visible = false, elapsed = 0, count = 0;
+    const draw = () => {
+      context.setTransform(scale, 0, 0, scale, 0, 0);
+      context.clearRect(0, 0, width, height);
+      const mobile = width < 760;
+      const margin = width * (mobile ? .075 : .17);
+      for (const light of lights.slice(0, mobile ? 26 : 48)) {
+        const x = (light.side < 0 ? 0 : width - margin) + light.x * margin + Math.sin(elapsed * .22 + light.phase) * 8;
+        const y = ((light.y * height - elapsed * light.speed * 7) % height + height) % height;
+        const alpha = (.16 + (Math.sin(elapsed * .6 + light.phase) + 1) * .13) * Math.min(1, y / 110, (height - y) / 100);
+        context.fillStyle = `rgba(170,122,37,${alpha})`;
+        context.beginPath();
+        context.ellipse(x, y, light.size * .65, light.size * 1.45, -.4, 0, Math.PI * 2);
+        context.fill();
+      }
+      // The arcs sit outside the reading column and move much slower than the particles.
+      for (const side of [-1, 1]) {
+        context.save();
+        context.translate(side < 0 ? -width * .12 : width * 1.12, height * .5);
+        context.rotate(side * (.2 + Math.sin(elapsed * .075) * .06));
+        context.strokeStyle = "rgba(171,130,58,.12)";
+        context.lineWidth = .75;
+        for (let ring = 0; ring < 3; ring++) {
+          context.beginPath();
+          context.ellipse(0, 0, width * .25 + ring * 16, height * .55 + ring * 16, 0, 0, Math.PI * 2);
+          context.stroke();
+        }
+        context.restore();
+      }
+    };
+    const stop = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      lastTime = 0;
+      canvas.dataset.motion = "paused";
+    };
+    const tick = time => {
+      frame = 0;
+      if (!visible || document.hidden || !canAnimate()) { stop(); return; }
+      if (!lastTime || time - lastTime >= 32) {
+        elapsed += lastTime ? Math.min((time - lastTime) / 1000, .08) : 0;
+        lastTime = time;
+        draw();
+        canvas.dataset.frame = String(++count);
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    const sync = () => {
+      if (visible && !document.hidden && canAnimate()) {
+        canvas.dataset.motion = "running";
+        if (!frame) frame = requestAnimationFrame(tick);
+      } else stop();
+    };
+    new ResizeObserver(() => {
+      const bounds = host.getBoundingClientRect();
+      width = Math.max(1, bounds.width);
+      height = Math.max(1, bounds.height);
+      scale = resizeCanvas(canvas, context, width, height, width < 760 ? 1 : 1.25);
+      draw();
+    }).observe(host);
+    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }, { threshold: .01 }).observe(host);
+    document.addEventListener("visibilitychange", sync);
+  }
+
+  function mountSectionEntrances() {
+    if (typeof Element.prototype.animate !== "function") return;
+    const active = new Set();
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        observer.unobserve(entry.target);
+        if (!canAnimate()) continue;
+        const animation = entry.target.animate(
+          [{ opacity: .45, transform: "translateY(18px)" }, { opacity: 1, transform: "translateY(0)" }],
+          { duration: 720, easing: "cubic-bezier(.22,1,.36,1)" },
+        );
+        active.add(animation);
+        animation.finished.catch(() => {}).finally(() => active.delete(animation));
+      }
+    }, { threshold: .08 });
+    document.querySelectorAll(".recognition-grid, .preview-layout, .steps li, .branch-stage, .plan-detail, .price-panel, .creator-note .section-inner, .faq .section-inner").forEach(element => observer.observe(element));
+    document.addEventListener("visibilitychange", () => {
+      for (const animation of active) {
+        if (!canAnimate()) animation.finish();
+        else if (document.hidden) animation.pause();
+        else animation.play();
+      }
+    });
+  }
 
   function mountGoldenRain(host, hostIndex) {
     const canvas = document.createElement("canvas");
@@ -374,7 +489,7 @@
       settled: false,
       replayRequested: false,
     };
-    const duration = 3100;
+    const duration = 1800;
 
     const easeArrival = (value) => 1 - Math.pow(1 - value, 3);
 
@@ -539,7 +654,7 @@
       const half = lensSize / 2;
       const x = clamp(event.clientX - bounds.left, half, bounds.width - half);
       const y = clamp(event.clientY - bounds.top, half, bounds.height - half);
-      const zoom = 1.24;
+      const zoom = 1.65;
 
       lens.style.left = `${x - half}px`;
       lens.style.top = `${y - half}px`;
@@ -719,7 +834,9 @@
   );
 
   document.querySelectorAll("[data-sos-rain]").forEach(mountGoldenRain);
+  document.querySelectorAll("[data-sos-atmosphere]").forEach(mountHeroAtmosphere);
   document.querySelectorAll("[data-sos-flow]").forEach(mountPlanFlow);
   document.querySelectorAll("[data-sos-logo]").forEach(mountLogoReveal);
   mountPlanCarousel();
+  mountSectionEntrances();
 })();
