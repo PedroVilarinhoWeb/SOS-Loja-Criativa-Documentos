@@ -2577,7 +2577,8 @@ body.preview-reader-open {
 .plan-purchase select { max-width: 420px; min-height: 48px; padding: 10px; background: var(--white); color: var(--green-950); border: 1px solid var(--gold-200); border-radius: 4px; font: inherit; }
 .plan-purchase p { margin: 0; line-height: 1.6; }
 .plan-purchase .button { justify-self: start; }
-.creator-note { padding: 48px 0; }
+.creator-note { padding: 32px 0; }
+@media (max-width: 760px) { .creator-note { padding: 20px 0; } }
 .creator-note h2 { font-size: clamp(28px, 4vw, 38px); }
 .creator-note p { max-width: 780px; line-height: 1.7; }
 .price-panel > .text-link { display: block; margin-top: 20px; }
