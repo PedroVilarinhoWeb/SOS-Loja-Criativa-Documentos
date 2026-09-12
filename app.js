@@ -63,8 +63,12 @@ const planModules = [
 
 const pageMotionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 const forcePageMotion = new URLSearchParams(window.location.search).has("force-motion");
-const scrollBehavior = () =>
-  pageMotionPreference.matches && !forcePageMotion ? "auto" : "smooth";
+const scrollBehavior = () => {
+  if (document.documentElement.dataset.motionReady === "true") {
+    return document.documentElement.classList.contains("motion-enabled") ? "smooth" : "auto";
+  }
+  return pageMotionPreference.matches && !forcePageMotion ? "auto" : "smooth";
+};
 
 const backToTopButton = document.querySelector(".back-to-top");
 backToTopButton?.addEventListener("click", () => {

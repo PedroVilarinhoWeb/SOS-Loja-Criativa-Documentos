@@ -1,25 +1,62 @@
 (() => {
   const parameters = new URLSearchParams(window.location.search);
-  const staticMode = parameters.has("static") || parameters.has("reduce-motion");
   const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const forceMotion = parameters.has("force-motion");
+  const motionButton = document.querySelector("[data-motion-toggle]");
+  const preferenceKey = "sos-motion";
+  let userMotion = null;
+  try {
+    const saved = sessionStorage.getItem(preferenceKey);
+    if (saved === "enabled" || saved === "paused") userMotion = saved === "enabled";
+  } catch {
+    // A página continua a funcionar quando o armazenamento está indisponível.
+  }
+  const rememberMotion = () => {
+    try { sessionStorage.setItem(preferenceKey, userMotion ? "enabled" : "paused"); } catch {}
+  };
+  if (parameters.has("static") || parameters.has("reduce-motion")) {
+    userMotion = false;
+    rememberMotion();
+  } else if (parameters.has("force-motion")) {
+    userMotion = true;
+    rememberMotion();
+  }
+
   let previousMotion;
   const canAnimate = () => {
-    const enabled = !staticMode && (forceMotion || !motionPreference.matches);
-    // Keep CSS and canvas in sync even if the browser delays its media-change event.
+    const enabled = userMotion ?? !motionPreference.matches;
     if (enabled !== previousMotion) {
       previousMotion = enabled;
       document.documentElement.classList.toggle("motion-enabled", enabled);
+      document.documentElement.classList.toggle("motion-paused", !enabled);
+      document.documentElement.dataset.motionReady = "true";
+      if (motionButton) {
+        motionButton.textContent = enabled ? "Pausar efeitos" : "Ativar efeitos";
+        motionButton.setAttribute("aria-label", enabled ? "Pausar efeitos visuais" : "Ativar efeitos visuais");
+      }
     }
     return enabled;
   };
-
-  motionPreference.addEventListener("change", () => {
+  const onMotionOrVisibilityChange = (listener) => {
+    document.addEventListener("visibilitychange", listener);
+    document.addEventListener("sos:motion-change", listener);
+  };
+  const syncMotion = () => {
     canAnimate();
-    document.dispatchEvent(new Event("visibilitychange"));
+    document.dispatchEvent(new Event("sos:motion-change"));
+  };
+  motionPreference.addEventListener("change", syncMotion);
+  motionButton?.addEventListener("click", () => {
+    userMotion = !canAnimate();
+    rememberMotion();
+    // Uma escolha no botão substitui também os parâmetros da pré-visualização.
+    const url = new URL(window.location.href);
+    for (const key of ["static", "reduce-motion", "force-motion"]) url.searchParams.delete(key);
+    history.replaceState(history.state, "", url.pathname + url.search + url.hash);
+    syncMotion();
+    if (userMotion) window.dispatchEvent(new Event("sos:replay-logo"));
   });
-
   canAnimate();
+  if (motionButton) motionButton.hidden = false;
 
   const clamp = (value, minimum, maximum) =>
     Math.max(minimum, Math.min(maximum, value));
@@ -120,7 +157,7 @@
       draw();
     }).observe(host);
     new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }, { threshold: .01 }).observe(host);
-    document.addEventListener("visibilitychange", sync);
+    onMotionOrVisibilityChange(sync);
   }
 
   function mountSectionEntrances() {
@@ -140,7 +177,7 @@
       }
     }, { threshold: .08 });
     document.querySelectorAll(".recognition-grid, .preview-layout, .steps li, .branch-stage, .plan-detail, .price-panel, .creator-note .section-inner, .faq .section-inner").forEach(element => observer.observe(element));
-    document.addEventListener("visibilitychange", () => {
+    onMotionOrVisibilityChange(() => {
       for (const animation of active) {
         if (!canAnimate()) animation.finish();
         else if (document.hidden) animation.pause();
@@ -308,7 +345,7 @@
       },
       { threshold: 0.02 },
     ).observe(host);
-    document.addEventListener("visibilitychange", () => {
+    onMotionOrVisibilityChange(() => {
       if (document.hidden) stop();
       else start();
     });
@@ -450,7 +487,7 @@
       },
       { threshold: 0.02 },
     ).observe(section);
-    document.addEventListener("visibilitychange", start);
+    onMotionOrVisibilityChange(start);
     resize();
   }
 
@@ -510,6 +547,7 @@
       state.frameCount += 1;
       container.dataset.frame = String(state.frameCount);
       if (!state.built || document.hidden) return;
+      if (!canAnimate()) { settle(); return; }
       if (!state.visible) {
         state.replayRequested = true;
         return;
@@ -693,7 +731,8 @@
       },
       { threshold: 0.04 },
     ).observe(container);
-    document.addEventListener("visibilitychange", () => {
+    onMotionOrVisibilityChange(() => {
+      if (!canAnimate()) { settle(); return; }
       if (document.hidden && state.frame) {
         cancelAnimationFrame(state.frame);
         state.frame = 0;
@@ -743,6 +782,9 @@
     const schedule = () => {
       window.clearTimeout(timer);
       if (!canAnimate() || !visible || document.hidden) {
+        activeAnimation?.cancel();
+        text.style.opacity = "1";
+        text.style.transform = "translateY(0)";
         carousel.dataset.motion = canAnimate() ? "stopped" : "paused";
         return;
       }
@@ -825,7 +867,7 @@
       { threshold: 0.05 },
     ).observe(carousel);
     window.addEventListener("resize", fitBadge, { passive: true });
-    document.addEventListener("visibilitychange", schedule);
+    onMotionOrVisibilityChange(schedule);
   }
 
   window.sosPlanTitles = Array.from(
